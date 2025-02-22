@@ -12,7 +12,7 @@
    ```sh
    node -v   # Node.js 버전 확인
    npm -v    # npm 버전 확인
-3. 프로젝트 클론 및 실행
+3. 프로젝트 클론 및 이동
     ```sh
     git clone -b dev https://github.com/linkpond/MentoView-FE.git
     cd MentoView-FE
