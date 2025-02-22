@@ -24,7 +24,7 @@
     npm start
     
 ## 2️⃣ 프로젝트 구조
-
+```md
 MentoView-FE
 ├── src
 │ ├── components/ # 재사용 가능한 UI 컴포넌트 모음(Nav, Footer 등)
