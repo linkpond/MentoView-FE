@@ -1,6 +1,10 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
+  :root {
+    --main-color: #56D3C7;
+  }
+
   * {
     margin: 0;
     padding: 0;
@@ -8,6 +12,7 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
+    font-size: 14px;
     color: #555;
   }
 

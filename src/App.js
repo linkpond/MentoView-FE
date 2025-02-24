@@ -13,7 +13,13 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Main />} />
           <Route path="/test" element={<Test />} />
+          <Route path="/about" element={"about"} />
+          <Route path="/service/voice" element={"voice"} />
+          <Route path="/service/video" element={"video"} />
+          <Route path="/myservice" element={"myservice"} />
+          <Route path="/contactus" element={"contactus"} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={"signup"} />
         </Route>
       </Routes>
     </Router>
