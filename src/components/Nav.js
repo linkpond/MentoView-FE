@@ -17,6 +17,7 @@ const Navbox = styled.div`
         cursor: pointer;
     }
     border-bottom: 1.5px solid #aaa;
+    background-color: #fff;
 `
 const MenuBox = styled.div`
     width: fit-content;

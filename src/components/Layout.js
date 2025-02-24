@@ -10,6 +10,11 @@ const LayoutContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background-image: url("bg2.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 `;
 
 const Layout = () => {
