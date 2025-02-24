@@ -82,6 +82,7 @@ const DropdownBox = styled.div`
     justify-content: center;
     border: 1.5px solid #ddd;
     color: initial;
+    background-color: #fff;
 `
 const DropdownItem = styled.div`
     width: 100%;
