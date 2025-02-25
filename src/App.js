@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Test from "./pages/Test";
 import Layout from "./components/Layout";
 import Signup from "./pages/Signup";
+import About from "./pages/About";
 
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Main />} />
           <Route path="/test" element={<Test />} />
-          <Route path="/about" element={"about"} />
+          <Route path="/about" element={<About />} />
           <Route path="/service/voice" element={"voice"} />
           <Route path="/service/video" element={"video"} />
           <Route path="/myservice" element={"myservice"} />
