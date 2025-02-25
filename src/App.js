@@ -4,6 +4,7 @@ import Main from "./pages/Main";
 import Login from "./pages/Login";
 import Test from "./pages/Test";
 import Layout from "./components/Layout";
+import Signup from "./pages/Signup";
 
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
           <Route path="/myservice" element={"myservice"} />
           <Route path="/contactus" element={"contactus"} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={"signup"} />
+          <Route path="/signup" element={<Signup />} />
         </Route>
       </Routes>
     </Router>
