@@ -8,6 +8,7 @@ import Signup from "./pages/Signup";
 import About from "./pages/About";
 import Contactus from "./pages/Contactus";
 import MyService from "./pages/Myservice";
+import Detail from "./pages/Detail";
 
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
           <Route path="/service/voice" element={"voice"} />
           <Route path="/service/video" element={"video"} />
           <Route path="/myservice" element={<MyService />} />
-          <Route path="/myservice/:id" element={"detail"} />
+          <Route path="/myservice/:id" element={<Detail/>} />
           <Route path="/contactus" element={<Contactus />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

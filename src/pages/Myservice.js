@@ -40,7 +40,7 @@ const ResumeBox = styled.div`
     height: fit-content;
     min-height: 500px;
     background-color: #fff;
-    border: 2px solid var(--main-color);
+    /* border: 2px solid var(--main-color); */
     border-radius: 8px;
     box-shadow: 0px 2px 10px 1px rgb(0, 0, 0, 0.1);
     display: flex;
