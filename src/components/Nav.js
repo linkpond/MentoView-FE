@@ -108,22 +108,22 @@ const Nav = () => {
         <Navbox>
             <img className="logo" src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" onClick={() => { navigate("/") }} />
             <MenuBox>
-                <div className="menu-item" onClick={() => { navigate("/about") }}>About</div>
+                <div className="menu-item" onClick={() => { navigate("/about"); window.scrollTo(0, 0); }}>About</div>
                 <div className="menu-item re"
                     onMouseEnter={() => setDropdownVisible(true)}
                     onMouseLeave={() => setDropdownVisible(false)}
                 >Service
                     <DropdownBox isVisible={dropdownVisible}>
-                        <DropdownItem onClick={() => {navigate("/service/voice")}}>Voice</DropdownItem>
-                        <DropdownItem onClick={() => {navigate("/service/video")}}>Video</DropdownItem>
+                        <DropdownItem onClick={() => { navigate("/service/voice"); window.scrollTo(0, 0); }}>Voice</DropdownItem>
+                        <DropdownItem onClick={() => { navigate("/service/video"); window.scrollTo(0, 0); }}>Video</DropdownItem>
                     </DropdownBox>
                 </div>
-                <div className="menu-item" onClick={() => { navigate("/myservice"); }}>My Service</div>
-                <div className="menu-item" onClick={() => { navigate("/contactus"); }}>Contact Us</div>
+                <div className="menu-item" onClick={() => { navigate("/myservice"); window.scrollTo(0, 0); }}>My Service</div>
+                <div className="menu-item" onClick={() => { navigate("/contactus"); window.scrollTo(0, 0); }}>Contact Us</div>
             </MenuBox>
             <AuthBox>
-                <AuthButton onClick={() => { navigate("/login") }}>Login</AuthButton>
-                <AuthButton onClick={() => { navigate("/signup") }}>Signup</AuthButton>
+                <AuthButton onClick={() => { navigate("/login"); window.scrollTo(0, 0); }}>Login</AuthButton>
+                <AuthButton onClick={() => { navigate("/signup"); window.scrollTo(0, 0); }}>Signup</AuthButton>
             </AuthBox>
         </Navbox>
     )

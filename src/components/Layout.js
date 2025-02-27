@@ -3,6 +3,7 @@ import styled from "styled-components";
 import GlobalStyles from "../styles/GlobalStyles";
 import Nav from "./Nav";
 import Footer from "./Footer";
+import Back from "./Back";
 
 const LayoutContainer = styled.div`
   width: 100%;
@@ -30,6 +31,7 @@ const Layout = () => {
         <Nav />
         <Outlet />
         <Footer />
+        <Back />
       </LayoutContainer>
     </>
   );

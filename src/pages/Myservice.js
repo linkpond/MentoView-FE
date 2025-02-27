@@ -184,7 +184,7 @@ const MyService = () => {
                                                 <span className="ac-text">{item2.type}</span>
                                                 <span className="edge">상태</span>
                                                 <span className="ac-text">{item2.status}</span>
-                                                <div className="detail-btn" onClick={() => { navigate("/myservice/" + item2.iid)}}>상세 보기</div>
+                                                <div className="detail-btn" onClick={() => { navigate("/myservice/" + item2.iid); window.scrollTo(0, 0); }}>상세 보기</div>
                                             </AccordionContent>
                                         )
                                     })
