@@ -7,9 +7,9 @@ import Layout from "./components/Layout";
 import Signup from "./pages/Signup";
 import About from "./pages/About";
 import Contactus from "./pages/Contactus";
-import MyService from "./pages/Myservice";
+import MyService from "./pages/MyService.js";
 import Detail from "./pages/Detail";
-
+import MyPage from "./pages/MyPage.js"
 
 function App() {
   return (
@@ -26,6 +26,7 @@ function App() {
           <Route path="/contactus" element={<Contactus />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/mypage" element={<MyPage />} />
         </Route>
       </Routes>
     </Router>
