@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useSelector } from "react-redux";
 // localhost:3000/test 경로로 가서 테스트 진행
 
 
@@ -9,8 +10,6 @@ const Test = () => {
     const Paduk = () => {
         alert("파덕파덕");
     }
-
-
 
     //
     return (

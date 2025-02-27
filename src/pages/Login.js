@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-
+import useSocialLogin from "../hooks/useSocialLogin.js";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 const LoginBox = styled.div`
     width: 100%;
     height: 100vh;
@@ -78,6 +80,23 @@ const LoginBtn = styled.div`
 
 const Login = () => {
     const navigate = useNavigate();
+    const socialLogin = useSocialLogin();
+
+    const handleSocialLogin = () => {
+        socialLogin.loginWithGoogle();
+    };
+    const user = useSelector((state) => state.auth.user);
+    
+    useEffect(() => {
+        console.log("🔍 현재 user 상태:", user);
+        if (user) {
+          console.log("✅ 로그인 성공! 팝업 닫기");
+          if (window.opener) {
+            window.close();
+          }
+        }
+      }, [user]);
+
     return (
         <LoginBox>
             <LoginForm>
@@ -86,9 +105,10 @@ const Login = () => {
                 <Input type="password" placeholder="PW" />
                 <ButtonBox>
                     <LoginBtn>Login</LoginBtn>
-                    <LoginBtn>Social Login</LoginBtn>
+                    <LoginBtn onClick={handleSocialLogin}>Social Login</LoginBtn>
                 </ButtonBox>
                 <span className="signup" onClick={() => { navigate("/signup")}}>Signup</span>
+                <div>{user ? "LOGIN 성공 ": "LOGIN 실패" }</div>
             </LoginForm>
         </LoginBox>
     )
