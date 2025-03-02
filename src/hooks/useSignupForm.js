@@ -1,17 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
-const useSignupForm = () => {
-  return useMutation(async () => {
-    const data = {
-      name: 'testuser',
-      email: 'test@example.com',
-      password: 'password123',
-    };
-    
-    const response = await axios.post('/api/signup/form', data);
-    return response.data;
-  });
+const signupRequest = async (userData) => {
+  const response = await axios.post('http://localhost:8080/api/signup/form', userData);
+  return response.data;
 };
 
-export default useSignupForm;
+export const useSignup = () => {
+  return useMutation({
+    mutationFn: signupRequest
+  });
+};

@@ -2,8 +2,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import useSocialLogin from "../hooks/useSocialLogin.js";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { useLogin } from "../hooks/useFormLogin.js";
 const LoginBox = styled.div`
     width: 100%;
     height: 100vh;
@@ -82,36 +83,58 @@ const LoginBtn = styled.div`
 const Login = () => {
     const navigate = useNavigate();
     const socialLogin = useSocialLogin();
+    const { mutate: login, isLoading, error } = useLogin();
+    const user = useSelector((state) => state.auth.user);
+    
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    });
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleFormLogin = () => {
+        login(formData, {
+            onSuccess: (data) => {
+                console.log("✅ 로그인 성공:", data);
+            },
+            onError: (err) => {
+                console.error("❌ 로그인 실패:", err.response?.data || err.message);
+            },
+        });
+    };
 
     const handleSocialLogin = () => {
         socialLogin.loginWithGoogle();
     };
-    const user = useSelector((state) => state.auth.user);
-    
+
     useEffect(() => {
         console.log("🔍 현재 user 상태:", user);
         if (user) {
-          console.log("✅ 로그인 성공! 팝업 닫기");
-          if (window.opener) {
-            window.close();
-          }
+            console.log("✅ 로그인 성공! 팝업 닫기");
+            if (window.opener) {
+                window.close();
+            }
         }
-      }, [user]);
+    }, [user]);
 
     return (
         <LoginBox>
-            <LoginForm>
+        <LoginForm>
             <img className="logo" src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" onClick={() => { navigate("/") }} />
-                <Input type="text" placeholder="ID" />
-                <Input type="password" placeholder="PW" />
-                <ButtonBox>
-                    <LoginBtn>Login</LoginBtn>
-                    <LoginBtn onClick={handleSocialLogin}>Social Login</LoginBtn>
-                </ButtonBox>
-                <span className="signup" onClick={() => { navigate("/signup")}}>Signup</span>
-                <div>{user ? "LOGIN 성공 ": "LOGIN 실패" }</div>
-            </LoginForm>
-        </LoginBox>
+            <Input type="text" name="email" placeholder="ID" onChange={handleChange} />
+            <Input type="password" name="password" placeholder="PW" onChange={handleChange} />
+            <ButtonBox>
+                <LoginBtn onClick={handleFormLogin} disabled={isLoading}>Login</LoginBtn>
+                <LoginBtn onClick={handleSocialLogin}>Social Login</LoginBtn>
+            </ButtonBox>
+            {error && <div style={{ color: "red" }}>❌ {error.message}</div>}
+            <span className="signup" onClick={() => { navigate("/signup") }}>Signup</span>
+            <div>{user ? "LOGIN 성공 " : "LOGIN 실패"}</div>
+        </LoginForm>
+    </LoginBox>
     )
 };
 
