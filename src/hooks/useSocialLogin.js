@@ -5,15 +5,15 @@ import { useGoogleLogin } from "@react-oauth/google";
 
 const useSocialLogin = () => {
   const dispatch = useDispatch();
-  const queryClient = useQueryClient(); // ✅ QueryClient 가져오기 (필요한 경우)
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: async (authCode) => {
-      const response = await fetch("http://localhost:8080/api/auth/google", {
+      const response = await fetch("http://localhost:8080/api/auth/me", { // ✅ API 엔드포인트 변경
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ code: authCode }),
+        credentials: "include", // ✅ 쿠키 포함
+        body: JSON.stringify({ code: authCode }), // ✅ authCode를 JSON으로 전달
       });
 
       if (!response.ok) {
@@ -23,25 +23,24 @@ const useSocialLogin = () => {
       return response.json();
     },
     onSuccess: (data) => {
-      dispatch(login(data));
+      dispatch(login(data)); // ✅ Redux 상태 업데이트
       console.log("✅ 로그인 성공:", data);
-      console.log("🛠 현재 Redux 상태:", JSON.parse(sessionStorage.getItem("user")));
       queryClient.invalidateQueries(["user"]);
     },
     onError: (error) => {
-      console.error(error.message);
+      console.error("❌ 로그인 실패:", error.message);
     },
   });
 
   const loginWithGoogle = useGoogleLogin({
     onSuccess: (tokenResponse) => {
-      console.log("구글 로그인 성공!", tokenResponse);
-      mutation.mutate(tokenResponse.code);
+      console.log("✅ 구글 로그인 성공:", tokenResponse);
+      mutation.mutate(tokenResponse.code); // ✅ authCode 전달
     },
     onError: () => {
-      console.error("구글 로그인 실패!");
+      console.error("❌ 구글 로그인 실패!");
     },
-    flow: "auth-code",
+    flow: "auth-code", // ✅ Authorization Code Flow 사용
   });
 
   return { loginWithGoogle };

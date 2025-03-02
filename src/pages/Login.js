@@ -82,10 +82,10 @@ const LoginBtn = styled.div`
 
 const Login = () => {
     const navigate = useNavigate();
-    const socialLogin = useSocialLogin();
+    const { loginWithGoogle } = useSocialLogin();
     const { mutate: login, isLoading, error } = useLogin();
     const user = useSelector((state) => state.auth.user);
-    
+
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -106,35 +106,28 @@ const Login = () => {
         });
     };
 
-    const handleSocialLogin = () => {
-        socialLogin.loginWithGoogle();
-    };
-
     useEffect(() => {
-        console.log("🔍 현재 user 상태:", user);
         if (user) {
-            console.log("✅ 로그인 성공! 팝업 닫기");
-            if (window.opener) {
-                window.close();
-            }
+            console.log("✅ 로그인 완료, 메인 페이지로 이동!");
+            navigate("/");
         }
     }, [user]);
 
     return (
         <LoginBox>
-        <LoginForm>
-            <img className="logo" src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" onClick={() => { navigate("/") }} />
-            <Input type="text" name="email" placeholder="ID" onChange={handleChange} />
-            <Input type="password" name="password" placeholder="PW" onChange={handleChange} />
-            <ButtonBox>
-                <LoginBtn onClick={handleFormLogin} disabled={isLoading}>Login</LoginBtn>
-                <LoginBtn onClick={handleSocialLogin}>Social Login</LoginBtn>
-            </ButtonBox>
-            {error && <div style={{ color: "red" }}>❌ {error.message}</div>}
-            <span className="signup" onClick={() => { navigate("/signup") }}>Signup</span>
-            <div>{user ? "LOGIN 성공 " : "LOGIN 실패"}</div>
-        </LoginForm>
-    </LoginBox>
+            <LoginForm>
+                <img className="logo" src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" onClick={() => { navigate("/") }} />
+                <Input type="text" name="email" placeholder="ID" onChange={handleChange} />
+                <Input type="password" name="password" placeholder="PW" onChange={handleChange} />
+                <ButtonBox>
+                    <LoginBtn onClick={handleFormLogin} disabled={isLoading}>Login</LoginBtn>
+                    <LoginBtn onClick={loginWithGoogle}>Social Login</LoginBtn>
+                </ButtonBox>
+                {error && <div style={{ color: "red" }}>❌ {error.message}</div>}
+                <span className="signup" onClick={() => { navigate("/signup") }}>Signup</span>
+                <div>{user ? "LOGIN 성공 " : "LOGIN 실패"}</div>
+            </LoginForm>
+        </LoginBox>
     )
 };
 
