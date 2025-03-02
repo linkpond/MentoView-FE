@@ -126,31 +126,36 @@ const Detail = () => {
     };
     const init = [
         {
-            question: "당신은 사람이신가요?",
-            answer: "아니요 저는 짐승입니다.",
-            feedback: "잘 아시네요 잘 아시네요잘 아시네요잘 아시네요잘 아시네요잘 아시네요잘 아시네요잘 아시네요잘 아시네요잘 아시네요잘 아시네요 잘 아시네요잘 아시네요잘 아시네요잘 아시네요잘 아시네요잘 아시네요잘 아시네요 잘 아시네요 ",
+            "questionId": 1,
+            "question": "What is your experience with Java?",
+            "answer": "I have extensive experience with Java...",
+            "feedback": "Good understanding of Java concepts."
         },
         {
-            question: "짐승처럼 소리낼수있나요?",
-            answer: "ABCDEFGHIJKLMNOPQRSTUVWXZ 가나다라마바사아자차카타파하하ABCDEFGHIJKLMNOPQRSTUVWXZ 가나다라마바사아자차카타파하하ABCDEFGHIJKLMNOPQRSTUVWXZ 가나다라마바사아자차카타파하하ABCDEFGHIJKLMNOPQRSTUVWXZ 가나다라마바사아자차카타파하하ABCDEFGHIJKLMNOPQRSTUVWXZ 가나다라마바사아자차카타파하하ABCDEFGHIJKLMNOPQRSTUVWXZ 가나다라마바사아자차카타파하하ABCDEFGHIJKLMNOPQRSTUVWXZ 가나다라마바사아자차카타파하하",
-            feedback: "잘 짖으시네요 훌륭합니다. 좀더 리드미컬한 부분을 추가하면 좋을 것 같아요",
+            "questionId": 2,
+            "question": "How do you handle multi-threading in Java?",
+            "answer": "For multi-threading, I typically use ExecutorService...",
+            "feedback": "Great explanation of multi-threading and concurrency in Java."
         },
         {
-            question: "q3",
-            answer: "a3",
-            feedback: "f3",
+            "questionId": 3,
+            "question": "Can you explain the SOLID principles?",
+            "answer": "SOLID principles are a set of guidelines for writing maintainable code...",
+            "feedback": "Excellent understanding of SOLID principles."
         },
         {
-            question: "q4",
-            answer: "a4",
-            feedback: "f4",
+            "questionId": 4,
+            "question": "Describe your experience with Spring Boot.",
+            "answer": "I have worked on several Spring Boot projects, including microservices...",
+            "feedback": "Strong knowledge of Spring Boot and its ecosystem."
         },
         {
-            question: "q5",
-            answer: "a5",
-            feedback: "f5",
-        },
-    ];
+            "questionId": 5,
+            "question": "What is the difference between a HashMap and a TreeMap?",
+            "answer": "HashMap is unordered, while TreeMap is sorted by keys...",
+            "feedback": "Clear explanation of HashMap and TreeMap differences."
+        }
+    ]
 
     return (
         <DetailBox>
@@ -169,7 +174,7 @@ const Detail = () => {
                     init.map((item, i) => {
                         const isOpen = openIndex === i;
                         return (
-                            <InterviewItem key={i}>
+                            <InterviewItem key={item.questionId}>
                                 <div className="ii-inner">
                                     <span className="edge">Q{i + 1}</span>
                                     <span className="ii-title">{item.question}</span>

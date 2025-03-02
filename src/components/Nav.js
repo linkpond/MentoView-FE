@@ -5,7 +5,7 @@ import styled from "styled-components";
 const Navbox = styled.div`
     position: sticky;
     top: 0;
-    z-index: 999;
+    z-index: 997;
     width: 100%;
     height: fit-content;
     display: flex;

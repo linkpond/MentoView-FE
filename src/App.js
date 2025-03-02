@@ -10,6 +10,7 @@ import Contactus from "./pages/Contactus";
 import MyService from "./pages/MyService.js";
 import Detail from "./pages/Detail";
 import MyPage from "./pages/MyPage.js"
+import VoiceService from "./pages/VoiceService.js";
 
 function App() {
   return (
@@ -19,10 +20,10 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/test" element={<Test />} />
           <Route path="/about" element={<About />} />
-          <Route path="/service/voice" element={"voice"} />
+          <Route path="/service/voice" element={<VoiceService />} />
           <Route path="/service/video" element={"video"} />
           <Route path="/myservice" element={<MyService />} />
-          <Route path="/myservice/:id" element={<Detail/>} />
+          <Route path="/myservice/:id" element={<Detail />} />
           <Route path="/contactus" element={<Contactus />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import useSocialLogin from "../hooks/useSocialLogin.js";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import axios from "axios";
 const LoginBox = styled.div`
     width: 100%;
     height: 100vh;
@@ -104,7 +105,7 @@ const Login = () => {
                 <Input type="text" placeholder="ID" />
                 <Input type="password" placeholder="PW" />
                 <ButtonBox>
-                    <LoginBtn>Login</LoginBtn>
+                    <LoginBtn onClick={signup}>Login</LoginBtn>
                     <LoginBtn onClick={handleSocialLogin}>Social Login</LoginBtn>
                 </ButtonBox>
                 <span className="signup" onClick={() => { navigate("/signup")}}>Signup</span>
