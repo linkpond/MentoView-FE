@@ -105,7 +105,7 @@ const Login = () => {
                 <Input type="text" placeholder="ID" />
                 <Input type="password" placeholder="PW" />
                 <ButtonBox>
-                    <LoginBtn onClick={signup}>Login</LoginBtn>
+                    <LoginBtn>Login</LoginBtn>
                     <LoginBtn onClick={handleSocialLogin}>Social Login</LoginBtn>
                 </ButtonBox>
                 <span className="signup" onClick={() => { navigate("/signup")}}>Signup</span>

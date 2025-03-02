@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
+import useSignupForm from "../hooks/useSignupForm";
 
 const SignupBox = styled.div`
     width: 100%;
@@ -111,8 +112,18 @@ function Certification() {
     );
 }
 
+
 const Signup = () => {
     const [certified, setCertified] = useState(false);
+    const mutation = useSignupForm();
+
+    const handleSignup = () => {
+        mutation.mutate(undefined, {
+            onSuccess: () => {
+                alert('회원가입 성공!');
+            }
+        });
+    };
     return (
         <SignupBox>
             <SignupFormBox>
@@ -129,7 +140,8 @@ const Signup = () => {
                     <Input />
                 </InputBox>
                 <Certification setCertified={setCertified} />
-                {certified && <SButton>회원가입</SButton>}
+                {/* {certified && <SButton onClick={handleSignup}>회원가입</SButton>} */}
+                <SButton onClick={handleSignup}>회원가입</SButton>
             </SignupFormBox>
         </SignupBox>
     );
