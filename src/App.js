@@ -11,6 +11,8 @@ import MyService from "./pages/MyService.js";
 import Detail from "./pages/Detail";
 import MyPage from "./pages/MyPage.js"
 import VoiceService from "./pages/VoiceService.js";
+import LoginPage from "./pages/LoginPage.js";
+import ProfilePage from "./pages/ProfilePage.js";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Main />} />
+          <Route path="/loginpage" element={<LoginPage />} />
+          <Route path="/profilepage" element={<ProfilePage />} />
           <Route path="/test" element={<Test />} />
           <Route path="/about" element={<About />} />
           <Route path="/service/voice" element={<VoiceService />} />

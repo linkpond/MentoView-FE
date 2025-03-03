@@ -1,11 +1,9 @@
-// import axios from "axios";
-// import styled from "styled-components";
-
-import axios from "axios";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import axios from "axios";
 
 const TestContainer = styled.div`
     width: 100%;
@@ -16,66 +14,56 @@ const TestContainer = styled.div`
     justify-content: center;
     color: #fff;
     font-size: 30px;
-`
+`;
 
-const Test = () => {
-    const navigate = useNavigate();
-    const user = useSelector((state) => state.auth.user);
+const GoogleLoginButton = () => {
+    return (
+        <GoogleOAuthProvider clientId="463314275621-eqcsd957m42hse9fi7vdek59q0cen29m.apps.googleusercontent.com">
+            <GoogleLogin
+                onSuccess={() => {
+                    console.log("로그인 성공! 쿠키에서 토큰이 자동 저장됨.");
+                    window.location.reload(); // 새로고침해서 쿠키 반영
+                }}
+                onError={() => {
+                    console.error("로그인 실패");
+                }}
+            />
+        </GoogleOAuthProvider>
+    );
+};
 
-    const fetchUserData = async () => {
-        console.log("🔄 사용자 정보를 다시 가져옵니다.");
-        // 🔥 기존 Redux 상태(user)를 활용하여 자동 갱신됨
-        try {
-            const response = await fetch("http://localhost:8080/api/auth/me", {
-                credentials: "include", // 쿠키 포함
-            });
-            const data = await response.json();
-            console.log("🔄 사용자 정보 갱신:", data);
-            // Redux 상태 업데이트가 필요하면 여기서 dispatch 호출
-            return data;
-
-        } catch (error) {
-            console.error("❌ 사용자 데이터 가져오기 실패:", error);
-            return null;
-        }
-    };
-
-
-    const handleSocialLogin = () => {
-        const popup = window.open(
-            "http://localhost:8080/oauth2/authorization/google",
-            "Google Login",
-            "width=600,height=600"
-        );
-    
-        const interval = setInterval(() => {
-            if (!popup || popup.closed) {
-                clearInterval(interval);
-                console.log("✅ 로그인 팝업이 닫혔습니다. 사용자 데이터를 가져옵니다.");
-                fetchUserData(); // 🔹 사용자 정보 갱신
-                navigate("/");
-            }
-        }, 1000);
-    };
-    
+const UserProfile = () => {
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        // const checkUserStatus = async () => {
-        //     const userData = await fetchUserData();
-        //     if (userData) {
-        //         console.log("✅ 로그인 완료, 메인 페이지로 이동!");
-        //         // navigate("/"); // ✅ 로그인 후 메인 페이지로 이동
-        //     }
-        // };
+        const fetchUser = async () => {
+            try {
+                const res = await axios.get("http://localhost:8080/auth/me", {
+                    withCredentials: true, // 쿠키 포함 요청
+                });
+                console.log(res);
+                setUser(res.data);
+            } catch (error) {
+                console.error("사용자 정보를 가져오지 못함", error);
+            }
+        };
 
-        // checkUserStatus();
-        
+        fetchUser();
     }, []);
+
+    return user ? <p>환영합니다, {user.name}!</p> : <p>로그인이 필요합니다.</p>;
+};
+
+
+
+
+const Test = () => {
     return (
         <TestContainer>
-            <button onClick={handleSocialLogin}>123</button>
+            <GoogleLoginButton />
+            <UserProfile />
         </TestContainer>
-    )
+    );
 };
 
 export default Test;

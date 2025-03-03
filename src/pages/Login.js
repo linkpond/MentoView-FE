@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import useSocialLogin from "../hooks/useSocialLogin.js";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { useLogin } from "../hooks/useFormLogin.js";
+import useSocialLogin from "../hooks/useSocialLogin";
+
 const LoginBox = styled.div`
     width: 100%;
     height: 100vh;
@@ -15,7 +16,7 @@ const LoginBox = styled.div`
         width: 140px;
     }
     .signup {
-        margin: 5px 0px 5px 0px;
+        margin: 5px 0;
         font-size: 12px;
         font-weight: bold;
         cursor: pointer;
@@ -24,7 +25,8 @@ const LoginBox = styled.div`
             color: var(--main-color);
         }
     }
-`
+`;
+
 const LoginForm = styled.div`
     width: fit-content;
     height: fit-content;
@@ -35,7 +37,8 @@ const LoginForm = styled.div`
     border: 2px solid #eee;
     border-radius: 4px;
     padding: 10px;
-`
+`;
+
 const Input = styled.input`
     width: 300px;
     height: 40px;
@@ -52,7 +55,8 @@ const Input = styled.input`
     &::placeholder {
         font-size: 13px;
     }
-`
+`;
+
 const ButtonBox = styled.div`
     padding: 10px;
     width: 100%;
@@ -60,7 +64,8 @@ const ButtonBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-`
+`;
+
 const LoginBtn = styled.div`
     width: 140px;
     height: 34px;
@@ -78,14 +83,30 @@ const LoginBtn = styled.div`
         background-color: var(--main-color);
         color: #fff;
     }
-` 
+`;
 
+const CLIENT_ID = "463314275621-eqcsd957m42hse9fi7vdek59q0cen29m.apps.googleusercontent.com";
+
+const GoogleLoginButton = () => {
+  const { loginWithGoogle } = useSocialLogin();
+
+  const handleLoginSuccess = (credentialResponse) => {
+    loginWithGoogle(credentialResponse); 
+  };
+
+  return (
+    <GoogleOAuthProvider clientId={CLIENT_ID}>
+      <GoogleLogin
+        onSuccess={handleLoginSuccess}
+        onError={() => console.error("Google 로그인 실패")}
+      />
+    </GoogleOAuthProvider>
+  );
+};
 const Login = () => {
     const navigate = useNavigate();
-    const { loginWithGoogle } = useSocialLogin();
     const { mutate: login, isLoading, error } = useLogin();
     const user = useSelector((state) => state.auth.user);
-
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -121,14 +142,16 @@ const Login = () => {
                 <Input type="password" name="password" placeholder="PW" onChange={handleChange} />
                 <ButtonBox>
                     <LoginBtn onClick={handleFormLogin} disabled={isLoading}>Login</LoginBtn>
-                    <LoginBtn onClick={loginWithGoogle}>Social Login</LoginBtn>
+                    <LoginBtn>
+                        <GoogleLoginButton />
+                    </LoginBtn>
                 </ButtonBox>
                 {error && <div style={{ color: "red" }}>❌ {error.message}</div>}
                 <span className="signup" onClick={() => { navigate("/signup") }}>Signup</span>
-                <div>{user ? "LOGIN 성공 " : "LOGIN 실패"}</div>
+                <div>{user ? "LOGIN 성공" : "LOGIN 실패"}</div>
             </LoginForm>
         </LoginBox>
-    )
+    );
 };
 
 export default Login;
