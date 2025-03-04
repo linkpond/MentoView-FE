@@ -2,9 +2,9 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { useLogin } from "../hooks/useFormLogin.js";
-import useSocialLogin from "../hooks/useSocialLogin";
+import { useAuthMe } from "../hooks/useAuthMe.js";
+import { useGoogleAuth } from "../hooks/useGoogleLogin.js";
 
 const LoginBox = styled.div`
     width: 100%;
@@ -85,32 +85,24 @@ const LoginBtn = styled.div`
     }
 `;
 
-const CLIENT_ID = "463314275621-eqcsd957m42hse9fi7vdek59q0cen29m.apps.googleusercontent.com";
-
-const GoogleLoginButton = () => {
-  const { loginWithGoogle } = useSocialLogin();
-
-  const handleLoginSuccess = (credentialResponse) => {
-    loginWithGoogle(credentialResponse); 
-  };
-
-  return (
-    <GoogleOAuthProvider clientId={CLIENT_ID}>
-      <GoogleLogin
-        onSuccess={handleLoginSuccess}
-        onError={() => console.error("Google 로그인 실패")}
-      />
-    </GoogleOAuthProvider>
-  );
-};
 const Login = () => {
     const navigate = useNavigate();
     const { mutate: login, isLoading, error } = useLogin();
-    const user = useSelector((state) => state.auth.user);
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-    });
+    const { data: userInfo, refetch: fetchUserInfo } = useAuthMe();
+    const { refetch: fetchGoogleAuthUrl } = useGoogleAuth();
+
+    const handleSocialLogin = async () => {
+        try {
+            const { data } = await fetchGoogleAuthUrl();
+            if (data?.authUrl) {
+                window.location.href = data.authUrl;
+            }
+        } catch (error) {
+            console.error("❌ Google 로그인 실패:", error);
+        }
+    };
+
+    const [formData, setFormData] = useState({ email: "", password: "" });
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -128,11 +120,20 @@ const Login = () => {
     };
 
     useEffect(() => {
-        if (user) {
-            console.log("✅ 로그인 완료, 메인 페이지로 이동!");
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+
+        if (token) {
+            localStorage.setItem("token", token.trim());
+            fetchUserInfo();
+        }
+    }, [fetchUserInfo]);
+
+    useEffect(() => {
+        if (userInfo) {
             navigate("/");
         }
-    }, [user]);
+    }, [userInfo, navigate]);
 
     return (
         <LoginBox>
@@ -142,13 +143,10 @@ const Login = () => {
                 <Input type="password" name="password" placeholder="PW" onChange={handleChange} />
                 <ButtonBox>
                     <LoginBtn onClick={handleFormLogin} disabled={isLoading}>Login</LoginBtn>
-                    <LoginBtn>
-                        <GoogleLoginButton />
-                    </LoginBtn>
+                    <LoginBtn onClick={handleSocialLogin}>Social Login</LoginBtn>
                 </ButtonBox>
                 {error && <div style={{ color: "red" }}>❌ {error.message}</div>}
                 <span className="signup" onClick={() => { navigate("/signup") }}>Signup</span>
-                <div>{user ? "LOGIN 성공" : "LOGIN 실패"}</div>
             </LoginForm>
         </LoginBox>
     );
