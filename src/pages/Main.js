@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 
 const fadeIn = keyframes`
@@ -64,11 +66,22 @@ const StartBtn = styled.div`
 `
 
 const Main = () => {
+    const navigate = useNavigate();
+    const user = useSelector(state => state.auth.user);
+
+    const handleButtonClick = () => {
+        if (!user || !localStorage.getItem("token")) {
+            navigate("/login");
+        } else {
+            navigate("/interview");
+        }
+    };
+
     return (
         <MainBox>
             <Title className="title">면접이 두려우신가요?</Title>
             <SubTitle className="sub-title">혁신적인 AI 면접을 경험해보세요</SubTitle>
-            <StartBtn>MentoView로 시작하기</StartBtn>
+            <StartBtn onClick={handleButtonClick}>MentoView로 시작하기</StartBtn>
         </MainBox>
     )
 };
