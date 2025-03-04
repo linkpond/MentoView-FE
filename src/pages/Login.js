@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { useLogin } from "../hooks/useFormLogin.js";
-import { useAuthMe } from "../hooks/useAuthMe.js";
+import { useFormLoginInfo } from "../hooks/useFormLoginInfo.js";
+import { useGoogleUserInfo } from "../hooks/useGoogleUserInfo.js";
 import { useGoogleAuth } from "../hooks/useGoogleLogin.js";
+import { setUser } from "../redux/authSlice.js";
 
 const LoginBox = styled.div`
     width: 100%;
@@ -87,9 +88,17 @@ const LoginBtn = styled.div`
 
 const Login = () => {
     const navigate = useNavigate();
-    const { mutate: login, isLoading, error } = useLogin();
-    const { data: userInfo, refetch: fetchUserInfo } = useAuthMe();
+    const dispatch = useDispatch();
+    const { mutate: login, isLoading, error } = useFormLoginInfo();
+    const { data: googleUserInfo, refetch: fetchGoogleUserInfo } = useGoogleUserInfo();
     const { refetch: fetchGoogleAuthUrl } = useGoogleAuth();
+
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (token) {
+            navigate("/");
+        }
+    }, [navigate]);
 
     const handleSocialLogin = async () => {
         try {
@@ -111,7 +120,8 @@ const Login = () => {
     const handleFormLogin = () => {
         login(formData, {
             onSuccess: (data) => {
-                console.log("✅ 로그인 성공:", data);
+                sessionStorage.setItem("token", data.token);
+                dispatch(setUser(data));
             },
             onError: (err) => {
                 console.error("❌ 로그인 실패:", err.response?.data || err.message);
@@ -122,18 +132,18 @@ const Login = () => {
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
-
         if (token) {
-            localStorage.setItem("token", token.trim());
-            fetchUserInfo();
+            sessionStorage.setItem("token", token.trim());
+            fetchGoogleUserInfo();
         }
-    }, [fetchUserInfo]);
+    }, [fetchGoogleUserInfo]);
 
     useEffect(() => {
-        if (userInfo) {
-            navigate("/");
+        if (googleUserInfo) {
+            dispatch(setUser(googleUserInfo));
+            navigate("/"); 
         }
-    }, [userInfo, navigate]);
+    }, [googleUserInfo, navigate, dispatch]);
 
     return (
         <LoginBox>
