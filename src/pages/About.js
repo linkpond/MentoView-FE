@@ -1,6 +1,7 @@
 import styled, { keyframes } from "styled-components";
 import { BsChevronDown } from "react-icons/bs";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const fadeIn = keyframes`
     from {
@@ -201,7 +202,16 @@ const BottomBtn = styled.div`
 `
 
 const About = () => {
+    const navigate = useNavigate();
+    const user = useSelector(state => state.auth.user);
 
+    const handleButtonClick = () => {
+        if (!user || !sessionStorage.getItem("token")) {
+            navigate("/login");
+        } else {
+            navigate("/service/voice");
+        }
+    };
     return (
         <AboutBox>
             <ImageBox>
@@ -235,7 +245,7 @@ const About = () => {
                     <span className="bt-text">다가오는 면접에 자신있게</span>
                     <span className="bt-text">MentoView로 준비하고 합격해요</span>
                 </div>
-                <BottomBtn>MentoView로 면접 준비하기</BottomBtn>
+                <BottomBtn onClick={handleButtonClick}>MentoView로 면접 준비하기</BottomBtn>
             </BottomBox>
         </AboutBox>
     );
