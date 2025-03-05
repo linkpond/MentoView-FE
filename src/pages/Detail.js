@@ -2,7 +2,9 @@ import styled from "styled-components";
 import { FaAngleRight, FaRegFilePdf } from "react-icons/fa6";
 import { useRef, useState } from "react";
 import useInterviewDetail from "../hooks/useInterviewDetail";
-import { useLocation, useParams } from "react-router-dom";
+import useDeleteInterview from "../hooks/useDeleteInterview";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+
 
 
 const DetailBox = styled.div`
@@ -82,7 +84,6 @@ const AccordionContent = styled.div`
             width: 12%;
             font-weight: bold;
             margin-right: 10px;
-            /* border: 1px solid red; */
         }
         .af-text {
             width: 88%;
@@ -136,21 +137,46 @@ const HeaderBox = styled.div`
         }
     }
 `
-
+const Spinner = styled.div`
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid var(--main-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 40px;
+    padding: 30px;
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
 
 const Detail = () => {
+    const navigate = useNavigate();
     const { interviewId } = useParams();
     const location = useLocation();
     const interviewData = location.state;
-    const { data: init, isLoading, error } = useInterviewDetail(interviewId);
+    const { data: interviewFAQ, isLoading } = useInterviewDetail(interviewId);
+    const { mutate: deleteInterviewMutation } = useDeleteInterview();
     const [openIndex, setOpenIndex] = useState(null);
     const toggleAccordion = (index) => {
         setOpenIndex(openIndex === index ? null : index);
     };
 
-    if (isLoading) return console.log("ld");
-    if (error) return console.log(error);
+    if (isLoading) return (
+        <DetailBox>
+            <Spinner />
+        </DetailBox>
+    );
 
+    const handleDelete = () => {
+        deleteInterviewMutation(interviewId, {
+            onSuccess: () => {
+                navigate("/myservice");
+            },
+        });
+    };
     return (
         <DetailBox>
             <InterviewBox>
@@ -162,10 +188,10 @@ const Detail = () => {
                         <span className="text">{interviewData.type}</span>
                     </div>
                     <FaRegFilePdf className="icon" />
-                    <div className="delete-btn">Delete</div>
+                    <div className="delete-btn" onClick={handleDelete}>Delete</div>
                 </HeaderBox>
                 {
-                    init?.map((item, i) => {
+                    interviewFAQ?.map((item, i) => {
                         const isOpen = openIndex === i || openIndex === -1;
                         return (
                             <InterviewItem key={item.questionId}>
