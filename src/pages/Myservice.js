@@ -386,7 +386,7 @@ const MyService = () => {
                                 <div className="ri-inner">
                                     <span className="edge">{i + 1}번 이력서</span>
                                     <span className="ri-title">{item.title}</span>
-                                    <div className="ri-button" onClick={handleDeleteClick(item.rid)}>DELETE</div>
+                                    <div className="ri-button" onClick={() => handleDeleteClick(item.rid)}>DELETE</div>
                                     <ToggleIcon isOpen={isOpen} onClick={() => toggleAccordion(item.rid)} />
                                 </div>
                                 {
