@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-
+import { logout } from "../redux/authSlice"
 const Navbox = styled.div`
     position: sticky;
     top: 0;
@@ -103,7 +104,17 @@ const DropdownItem = styled.div`
 
 const Nav = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [dropdownVisible, setDropdownVisible] = useState(false);
+    const user = useSelector(state => state.auth.user);
+
+    const handleLogout = () => {
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("token");
+        dispatch(logout());
+        navigate("/");
+    };
+
     return (
         <Navbox>
             <img className="logo" src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" onClick={() => { navigate("/") }} />
@@ -122,8 +133,17 @@ const Nav = () => {
                 <div className="menu-item" onClick={() => { navigate("/contactus"); window.scrollTo(0, 0); }}>Contact Us</div>
             </MenuBox>
             <AuthBox>
-                <AuthButton onClick={() => { navigate("/login"); window.scrollTo(0, 0); }}>Login</AuthButton>
-                <AuthButton onClick={() => { navigate("/signup"); window.scrollTo(0, 0); }}>Signup</AuthButton>
+                {user ? (
+                    <>
+                        <span>{user.email}님 환영합니다</span>
+                        <AuthButton onClick={handleLogout}>Logout</AuthButton>
+                    </>
+                ) : (
+                    <>
+                        <AuthButton onClick={() => { navigate("/login"); window.scrollTo(0, 0); }}>Login</AuthButton>
+                        <AuthButton onClick={() => { navigate("/signup"); window.scrollTo(0, 0); }}>Signup</AuthButton>
+                    </>
+                )}
             </AuthBox>
         </Navbox>
     )

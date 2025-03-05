@@ -365,6 +365,7 @@ const VoiceService = () => {
     
     return (
         <VoiceServiceBox>
+            {/* 이력서 title값 delete 이력서 선택 disable해야함 */}
             <Overlay onClick={() => { setResumeModal(false); }} $visible={resumeModal} />
             <ResumeModal $visible={resumeModal}>
                 <span className="resume-title">{resume?.title}</span>
