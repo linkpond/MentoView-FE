@@ -7,7 +7,7 @@ import Layout from "./components/Layout";
 import Signup from "./pages/Signup";
 import About from "./pages/About";
 import Contactus from "./pages/Contactus";
-import MyService from "./pages/MyService.js";
+import MyService from "./pages/Myservice.js";
 import Detail from "./pages/Detail";
 import MyPage from "./pages/MyPage.js"
 import VoiceService from "./pages/VoiceService.js";
@@ -24,7 +24,7 @@ function App() {
           <Route path="/service/voice" element={<VoiceService />} />
           <Route path="/service/video" element={"video"} />
           <Route path="/myservice" element={<MyService />} />
-          <Route path="/myservice/:id" element={<Detail />} />
+          <Route path="/myservice/:interviewId" element={<Detail />} />
           <Route path="/contactus" element={<Contactus />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

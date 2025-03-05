@@ -40,7 +40,6 @@ const ResumeBox = styled.div`
     height: fit-content;
     min-height: 500px;
     background-color: #fff;
-    /* border: 2px solid var(--main-color); */
     border-radius: 8px;
     box-shadow: 0px 2px 10px 1px rgb(0, 0, 0, 0.1);
     display: flex;
@@ -83,7 +82,7 @@ const ResumeItem = styled.div`
             cursor: pointer;
             transition: all 0.15s;
             &:hover {
-                background-color: red;
+                background-color: #f05650;
             }
         }
     }
@@ -139,11 +138,14 @@ const MyService = () => {
         setOpenIndex(openIndex === index ? null : index);
     };
 
-    const init = [
+
+    const initResume = [
         {
             rid: 0,
             title: "20250225_고라파덕_이력서",
-            uid: [
+            file_url: "UUID + title",
+            Deletestatus: true,
+            interview: [
                 { iid: "0", rid: 0, type: "voice", status: "done", createdat: "20250225" },
                 { iid: "1", rid: 0, type: "video", status: "done", createdat: "20250226" }
             ]
@@ -151,7 +153,9 @@ const MyService = () => {
         {
             rid: 1,
             title: "20250225_뚱이_이력서",
-            uid: [
+            file_url: "UUID + title",
+            Deletestatus: false,
+            interview: [
                 { iid: "2", rid: 1, type: "voice", status: "done", createdat: "20250227" },
                 { iid: "3", rid: 1, type: "video", status: "진행중이에요옹", createdat: "20250228" }
             ]
@@ -164,7 +168,7 @@ const MyService = () => {
                 <CreateBtn>이력서 등록</CreateBtn>
                 {
 
-                    init.map((item, i) => {
+                    initResume.map((item, i) => {
                         const isOpen = openIndex === item.rid;
                         return (
                             <ResumeItem key={item.rid}>
@@ -175,16 +179,17 @@ const MyService = () => {
                                     <ToggleIcon isOpen={isOpen} onClick={() => toggleAccordion(item.rid)} />
                                 </div>
                                 {
-                                    item.uid.filter(item2 => item2.rid === item.rid).map((item2, j) => {
+                                    item.interview.filter(item2 => item2.rid === item.rid).map((item2, j) => {
                                         return (
                                             <AccordionContent key={item2.iid} isOpen={isOpen}>
-                                                <span className="edge">&middot; 응시일자</span>
+                                                <span className="edge">{j + 1}&nbsp;&middot;&nbsp;</span>
+                                                <span className="edge">응시일자</span>
                                                 <span className="ac-text">{item2.createdat}</span>
                                                 <span className="edge">타입</span>
                                                 <span className="ac-text">{item2.type}</span>
                                                 <span className="edge">상태</span>
                                                 <span className="ac-text">{item2.status}</span>
-                                                <div className="detail-btn" onClick={() => { navigate("/myservice/" + item2.iid); window.scrollTo(0, 0); }}>상세 보기</div>
+                                                <div className="detail-btn" onClick={() => { navigate("/myservice/" + item2.iid, { state: item2 }); window.scrollTo(0, 0); }}>상세 보기</div>
                                             </AccordionContent>
                                         )
                                     })
