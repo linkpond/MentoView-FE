@@ -11,6 +11,7 @@ import MyService from "./pages/MyService.js";
 import Detail from "./pages/Detail";
 import MyPage from "./pages/MyPage.js"
 import VoiceService from "./pages/VoiceService.js";
+import GoogleLogin from "./components/GoogleLogin.js";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/mypage" element={<MyPage />} />
         </Route>
+        <Route path="/google-login" element={<GoogleLogin />} />
       </Routes>
     </Router>
   );

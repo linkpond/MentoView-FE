@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useFormLoginInfo } from "../hooks/useFormLoginInfo.js";
-import { useGoogleUserInfo } from "../hooks/useGoogleUserInfo.js";
 import { useGoogleAuth } from "../hooks/useGoogleLogin.js";
 import { setUser } from "../redux/authSlice.js";
 
@@ -90,7 +89,6 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { mutate: login, isLoading, error } = useFormLoginInfo();
-    const { data: googleUserInfo, refetch: fetchGoogleUserInfo } = useGoogleUserInfo();
     const { refetch: fetchGoogleAuthUrl } = useGoogleAuth();
 
     useEffect(() => {
@@ -99,17 +97,6 @@ const Login = () => {
             navigate("/");
         }
     }, [navigate]);
-
-    const handleSocialLogin = async () => {
-        try {
-            const { data } = await fetchGoogleAuthUrl();
-            if (data?.authUrl) {
-                window.location.href = data.authUrl;
-            }
-        } catch (error) {
-            console.error("❌ Google 로그인 실패:", error);
-        }
-    };
 
     const [formData, setFormData] = useState({ email: "", password: "" });
 
@@ -129,21 +116,16 @@ const Login = () => {
         });
     };
 
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const token = params.get("token");
-        if (token) {
-            sessionStorage.setItem("token", token.trim());
-            fetchGoogleUserInfo();
+    const handleGoogleLogin = async () => {
+        try {
+            const { data } = await fetchGoogleAuthUrl();
+            if (data?.authUrl) {
+                window.location.href = data.authUrl;
+            }
+        } catch (error) {
+            console.error("❌ Google 로그인 실패:", error);
         }
-    }, [fetchGoogleUserInfo]);
-
-    useEffect(() => {
-        if (googleUserInfo) {
-            dispatch(setUser(googleUserInfo));
-            navigate("/"); 
-        }
-    }, [googleUserInfo, navigate, dispatch]);
+    };
 
     return (
         <LoginBox>
@@ -153,7 +135,7 @@ const Login = () => {
                 <Input type="password" name="password" placeholder="PW" onChange={handleChange} />
                 <ButtonBox>
                     <LoginBtn onClick={handleFormLogin} disabled={isLoading}>Login</LoginBtn>
-                    <LoginBtn onClick={handleSocialLogin}>Social Login</LoginBtn>
+                    <LoginBtn onClick={handleGoogleLogin}>Social Login</LoginBtn>
                 </ButtonBox>
                 {error && <div style={{ color: "red" }}>❌ {error.message}</div>}
                 <span className="signup" onClick={() => { navigate("/signup") }}>Signup</span>
