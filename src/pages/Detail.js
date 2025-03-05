@@ -81,12 +81,12 @@ const AccordionContent = styled.div`
         margin-top: 10px;
         border-top: 1.5px solid #ddd;
         .edge {
-            width: 12%;
+            width: 13%;
             font-weight: bold;
             margin-right: 10px;
         }
         .af-text {
-            width: 88%;
+            width: 87%;
         }
     }
 `;
@@ -160,6 +160,7 @@ const Detail = () => {
     const { data: interviewFAQ, isLoading } = useInterviewDetail(interviewId);
     const { mutate: deleteInterviewMutation } = useDeleteInterview();
     const [openIndex, setOpenIndex] = useState(null);
+    const interviewBoxRef = useRef();
     const toggleAccordion = (index) => {
         setOpenIndex(openIndex === index ? null : index);
     };
@@ -177,9 +178,48 @@ const Detail = () => {
             },
         });
     };
+    
+    const handlePrint = () => {
+        if (!interviewBoxRef.current) return;
+        const styles = Array.from(document.styleSheets)
+            .map(sheet => {
+                try {
+                    return Array.from(sheet.cssRules)
+                        .map(rule => rule.cssText)
+                        .join("\n");
+                } catch (e) {
+                    return "";
+                }
+            })
+            .join("\n");
+        const printContent = interviewBoxRef.current.innerHTML;
+        const printWindow = window.open("", "", "width=1200,height=800");
+
+        if (printWindow) {
+            printWindow.document.open();
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>MentoView</title>
+                    <style>
+                        ${styles}
+                    </style>
+                </head>
+                <body>
+                    ${printContent}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.onload = () => {
+                printWindow.print();
+                printWindow.close();
+            };
+        }
+    };
     return (
         <DetailBox>
-            <InterviewBox>
+            <InterviewBox ref={interviewBoxRef}>
                 <HeaderBox>
                     <div className="ht-box">
                         <span className="edge">응시일자</span>
@@ -187,7 +227,7 @@ const Detail = () => {
                         <span className="edge">Type</span>
                         <span className="text">{interviewData.type}</span>
                     </div>
-                    <FaRegFilePdf className="icon" />
+                    <FaRegFilePdf className="icon" onClick={handlePrint} />
                     <div className="delete-btn" onClick={handleDelete}>Delete</div>
                 </HeaderBox>
                 {
