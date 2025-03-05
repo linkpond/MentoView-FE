@@ -50,6 +50,9 @@ const AuthBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    .user {
+        font-weight: bold;
+    }
 `
 
 const AuthButton = styled.div`
@@ -98,7 +101,6 @@ const DropdownItem = styled.div`
     &:hover {
         background-color: var(--main-color);
         color: #fff;
-
     }
 `
 
@@ -135,7 +137,8 @@ const Nav = () => {
             <AuthBox>
                 {user ? (
                     <>
-                        <span>{user.email}님 환영합니다</span>
+                        <span className="user">{user?.email.split('@')[0]} 님</span>
+                        <AuthButton onClick={() => { navigate("/mypage"); window.scrollTo(0, 0); }}>Mypage</AuthButton>
                         <AuthButton onClick={handleLogout}>Logout</AuthButton>
                     </>
                 ) : (

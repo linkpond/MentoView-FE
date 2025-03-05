@@ -70,10 +70,10 @@ const Main = () => {
     const user = useSelector(state => state.auth.user);
 
     const handleButtonClick = () => {
-        if (!user || !localStorage.getItem("token")) {
+        if (!user || !sessionStorage.getItem("token")) {
             navigate("/login");
         } else {
-            navigate("/interview");
+            navigate("/service/voice");
         }
     };
 
