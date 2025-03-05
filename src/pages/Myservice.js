@@ -1,7 +1,11 @@
 import styled from "styled-components";
 import { FaAngleRight } from "react-icons/fa6";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaFileUpload } from "react-icons/fa";
+import useUploadResume from "../hooks/useUploadResume";
+import useResumeList from "../hooks/useResumeList";
+import useDeleteResume from "../hooks/useDeleteResume";
 
 const MyServiceBox = styled.div`
     width: 100%;
@@ -131,21 +135,203 @@ const AccordionContent = styled.div`
     }
 `;
 
+const Overlay = styled.div`
+    z-index: 998;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    opacity: ${({ $visible }) => ($visible ? "1" : "0")};
+    pointer-events: ${({ $visible }) => ($visible ? "auto" : "none")};
+    transition: opacity 0.3s ease-in-out;
+`;
+
+const ResumeModal = styled.div`
+    position: fixed;
+    top: 40%;
+    z-index: 999;
+    width: 350px;
+    height: fit-content;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 4px;
+    box-shadow: 0px 0px 4px 1px rgba(255, 255, 255);
+    background-color: #fff;
+    opacity: ${({ $visible }) => ($visible ? "1" : "0")};
+    transform: ${({ $visible }) => ($visible ? "scale(1)" : "scale(0.95)")};
+    pointer-events: ${({ $visible }) => ($visible ? "auto" : "none")};
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    .icon-box {
+        cursor: pointer;
+        width: fit-content;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #eee;
+        border-radius: 4px;
+        padding: 5px;
+        transition: all 0.15s;
+        .upload-icon {
+            color: var(--main-color);
+            font-size: 24px;
+        }
+        .icon-title {
+            font-weight: bold;
+            margin-left: 5px;
+            font-size: 20px;
+        }
+        &:hover {
+            border: 2px solid var(--main-color);
+        }
+    }
+    .resume-file {
+        display: none;
+    }
+    .file-name {
+        margin-top: 15px;
+        color: #aaa;
+    }
+    .real {
+        font-weight: bold;
+        font-size: 16px;
+        margin: 20px 0px 20px 0px;
+    }
+    .btn-box {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+    }
+`;
+
+const XBtn = styled.div`
+    border-radius: 4px;
+    background-color: #fff;
+    color: #f05650;
+    border: 2px solid #f05650;
+    padding: 4px 10px 4px 10px;
+    margin-left: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.15s;
+    &:hover {
+        background-color: #f05650;
+        color: #fff;
+    }
+`
+
+const OkBtn = styled(XBtn)`
+    color: var(--main-color);
+    border: 2px solid var(--main-color);
+    &:hover {
+        background-color: var(--main-color);
+        color: #fff;
+    }
+`
+const Spinner = styled.div`
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid var(--main-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 40px;
+    padding: 30px;
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+
 const MyService = () => {
+    const { data: resumeList, refetch, isLoading } = useResumeList();
+    const { mutate: uploadResume } = useUploadResume();
+    const { mutate: deleteResume } = useDeleteResume();
     const [openIndex, setOpenIndex] = useState(null);
+    const [fileName, setFileName] = useState('');
+    const [createModal, setCreateModal] = useState(false);
     const navigate = useNavigate();
+    const fileInputRef = useRef(null);
+
+    if (isLoading) {
+        return (
+            <MyServiceBox>
+                <Spinner />
+            </MyServiceBox>
+        );
+    }
+
     const toggleAccordion = (index) => {
         setOpenIndex(openIndex === index ? null : index);
     };
 
+    const handleUploadClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            if (fileExtension === 'pdf') {
+                setFileName(file.name);
+            } else {
+                alert('PDF 파일만 업로드할 수 있습니다.');
+                setFileName('');
+                fileInputRef.current.value = '';
+            }
+        }
+    };
+
+    const handleSubmit = () => {
+        if (!fileName) {
+            alert('파일을 선택해주세요.');
+            return;
+        }
+
+        const formData = new FormData();
+        const file = fileInputRef.current.files[0];
+        if (file) {
+            formData.append('file', file);
+        }
+
+        uploadResume(formData, {
+            onSuccess: () => {
+                navigate('/myservice');
+                // refetch();
+                setCreateModal(false);
+            },
+            onError: (error) => {
+                console.error("파일 업로드 실패:", error);
+            },
+        });
+    };
+
+    const handleDeleteClick = (resumeId) => {
+        deleteResume(resumeId, {
+            onSuccess: () => {
+                refetch();
+            },
+            onError: (error) => {
+                console.error("삭제 실패:", error);
+            },
+        });
+    };
 
     const initResume = [
         {
             rid: 0,
             title: "20250225_고라파덕_이력서",
             file_url: "UUID + title",
-            Deletestatus: true,
-            interview: [
+            deleteStatus: true,
+            interviewList: [
                 { iid: "0", rid: 0, type: "voice", status: "done", createdat: "20250225" },
                 { iid: "1", rid: 0, type: "video", status: "done", createdat: "20250226" }
             ]
@@ -154,8 +340,8 @@ const MyService = () => {
             rid: 1,
             title: "20250225_뚱이_이력서",
             file_url: "UUID + title",
-            Deletestatus: false,
-            interview: [
+            deletestatus: false,
+            interviewList: [
                 { iid: "2", rid: 1, type: "voice", status: "done", createdat: "20250227" },
                 { iid: "3", rid: 1, type: "video", status: "진행중이에요옹", createdat: "20250228" }
             ]
@@ -164,8 +350,33 @@ const MyService = () => {
 
     return (
         <MyServiceBox>
+            <Overlay onClick={() => { setCreateModal(false); }} $visible={createModal} />
+            <ResumeModal $visible={createModal}>
+                <div className="icon-box" onClick={handleUploadClick}>
+                    <FaFileUpload className="upload-icon" />
+                    <span className="icon-title">파일선택</span>
+                </div>
+                <input
+                    className="resume-file"
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                />
+                {
+                    fileName ?
+                        <>
+                            <span className="file-name">{fileName}</span>
+                            <span className="real">위 이력서를 업로드하시겠습니까?</span>
+                        </>
+                        : <span className="real">PDF 파일만 업로드할 수 있습니다</span>
+                }
+                <div className="btn-box">
+                    <XBtn onClick={() => { setCreateModal(false); }}>취소</XBtn>
+                    <OkBtn onClick={handleSubmit}>확인</OkBtn>
+                </div>
+            </ResumeModal>
             <ResumeBox>
-                <CreateBtn>이력서 등록</CreateBtn>
+                <CreateBtn onClick={() => { setCreateModal(true); }}>이력서 등록</CreateBtn>
                 {
 
                     initResume.map((item, i) => {
@@ -175,11 +386,11 @@ const MyService = () => {
                                 <div className="ri-inner">
                                     <span className="edge">{i + 1}번 이력서</span>
                                     <span className="ri-title">{item.title}</span>
-                                    <div className="ri-button">DELETE</div>
+                                    <div className="ri-button" onClick={handleDeleteClick(item.rid)}>DELETE</div>
                                     <ToggleIcon isOpen={isOpen} onClick={() => toggleAccordion(item.rid)} />
                                 </div>
                                 {
-                                    item.interview.filter(item2 => item2.rid === item.rid).map((item2, j) => {
+                                    item.interviewList.filter(item2 => item2.rid === item.rid).map((item2, j) => {
                                         return (
                                             <AccordionContent key={item2.iid} isOpen={isOpen}>
                                                 <span className="edge">{j + 1}&nbsp;&middot;&nbsp;</span>
