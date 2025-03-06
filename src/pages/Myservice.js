@@ -375,7 +375,7 @@ const MyService = () => {
                     }
                 }}>이력서 등록</CreateBtn>
                 {
-                    filteredResumeList && filteredResumeList.length >= 0 ? (
+                    filteredResumeList && filteredResumeList.length > 0 ? (
                         resumeList.map((item, i) => {
                             const isOpen = openIndex === item.resumeId;
                             return (

@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import styled from "styled-components";
 import { FaRegFilePdf } from "react-icons/fa6";
 import { FaMicrophone, FaStop } from "react-icons/fa";
+import useResumeList from "../hooks/useResumeList";
+import useInterviewQuestion from "../hooks/useInterviewQuestion";
 // MainContainer
 const VoiceServiceBox = styled.div`
     width: 100%;
@@ -378,58 +380,15 @@ const VoiceService = () => {
     const [currentProgress, setCurrentProgress] = useState(1);
     const [resume, setResume] = useState(null);
     const [resumeModal, setResumeModal] = useState(false);
-    const [isQuetionLoading, setIsQuestionLoading] = useState(false);
     const [questionStep, setQuestionStep] = useState(1);
     const [recording, setRecording] = useState(false);
     const [audioFiles, setAudioFiles] = useState([]);
     const [isRecordingComplete, setIsRecordingComplete] = useState(false);
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
-
-    const initResume = [
-        {
-            rid: 0,
-            title: "20250225_고라파덕_이력서",
-            file_url: "UUID + title",
-            deleteStatus: true,
-            interviewList: [
-                { iid: "0", rid: 0, type: "voice", status: "done", createdat: "20250225" },
-                { iid: "1", rid: 0, type: "video", status: "done", createdat: "20250226" }
-            ]
-        },
-        {
-            rid: 1,
-            title: "20250225_뚱이_이력서",
-            file_url: "UUID + title",
-            deleteStatus: false,
-            interviewList: [
-                { iid: "2", rid: 1, type: "voice", status: "done", createdat: "20250227" },
-                { iid: "3", rid: 1, type: "video", status: "진행중이에요옹", createdat: "20250228" }
-            ]
-        }
-    ];
-    const initQuestion = [
-        {
-            qid: 0,
-            question: "당신은 사람입니까? 이렇게 비가오는 밤이면 ~~ 지친 그리움으로 널 만나고 이 비가 끝나고 나면 난 너를 찾아 떠나갈꺼야아"
-        },
-        {
-            qid: 21,
-            question: "당신은 동물입니까?"
-        },
-        {
-            qid: 42,
-            question: "당신은 외계인입니까?"
-        },
-        {
-            qid: 53,
-            question: "당신은 식물입니까?"
-        },
-        {
-            qid: 84,
-            question: "당신은 미생물입니까?"
-        },
-    ];
+    const { data: resumeList } = useResumeList();
+    const [resumeId, setResumeId] = useState(null);
+    const { data: interviewQuestions, isLoading } = useInterviewQuestion(resumeId && resumeId !== null ? resumeId : null);
 
     const startRecording = async (qid) => {
         if (recording) return;
@@ -456,7 +415,6 @@ const VoiceService = () => {
         }
     };
 
-
     const stopRecording = () => {
         if (!recording) return;
 
@@ -475,6 +433,17 @@ const VoiceService = () => {
         setIsRecordingComplete(false);
     };
 
+    const handleResumeSelect = (item) => {
+        setResume(item);
+        setResumeModal(true);
+    };
+
+    const handleOkClick = () => {
+        setResumeId(resume?.resumeId);
+        setCurrentProgress(2);
+        setResumeModal(false);
+    };
+
     return (
         <VoiceServiceBox>
             <Overlay onClick={() => { setResumeModal(false); }} $visible={resumeModal} />
@@ -483,7 +452,7 @@ const VoiceService = () => {
                 <span className="real">위 이력서로 면접을 시작하시겠습니까?</span>
                 <div className="btn-box">
                     <XBtn onClick={() => { setResumeModal(false); }}>취소</XBtn>
-                    <OkBtn onClick={() => { setCurrentProgress(2); setResumeModal(false); }}>확인</OkBtn>
+                    <OkBtn onClick={handleOkClick}>확인</OkBtn>
                 </div>
             </ResumeModal>
             <ContentBox>
@@ -510,9 +479,9 @@ const VoiceService = () => {
                                         <span className="edge-title">내 이력서 목록</span>
                                     </div>
                                     {
-                                        initResume.filter(v => v.deleteStatus === true).map(item => {
+                                        resumeList?.filter(v => v.deleteStatus !== true).map(item => {
                                             return (
-                                                <ResumeItem key={item.rid} onClick={() => { setResume(item); setResumeModal(true); }}>
+                                                <ResumeItem key={item.rid} onClick={() => handleResumeSelect(item)}>
                                                     <span className="ri-title">{item.title}</span>
                                                 </ResumeItem>
                                             )
@@ -524,7 +493,7 @@ const VoiceService = () => {
                         <SliderItem>
                             <SpinBox className="spin-box">
                                 {
-                                    isQuetionLoading && isQuetionLoading
+                                    isLoading && isLoading
                                         ?
                                         <>
                                             <Spinner />
@@ -532,7 +501,7 @@ const VoiceService = () => {
                                             <span className="spin-title">잠시 숨을 고르고 면접을 준비해주세요</span>
                                         </>
                                         :
-                                        <>
+                                        <>{console.log(interviewQuestions)} {console.log(resumeId)}
                                             <span className="iv-title">질문이 생성되었습니다</span>
                                             <div className="iv-btn" onClick={() => { setCurrentProgress(3); }}>면접 시작하기</div>
                                         </>
@@ -543,21 +512,27 @@ const VoiceService = () => {
                             <InterviewBox>
                                 <InterviewWrapper step={questionStep}>
                                     {
-                                        initQuestion.map((item, i) => {
+                                        interviewQuestions?.map((item, i) => {
                                             return (
-                                                <InterviewItem key={item.qid}>
+                                                <InterviewItem key={item.qestionId}>
                                                     <div className="question-box">
                                                         <span className="edge">Q{i + 1}.</span>
                                                         <span className="question">{item.question}</span>
                                                     </div>
-                                                    <FaMicrophone className="record" onClick={() => { startRecording(item.qid) }} />
+                                                    <FaMicrophone
+                                                        className="record"
+                                                        onClick={isRecordingComplete ? undefined : () => startRecording(item.qid)}
+                                                        style={{ cursor: isRecordingComplete ? "default" : "pointer", opacity: isRecordingComplete ? 0.5 : 1 }}
+                                                    />
                                                     <div className="button-box">
                                                         <FaStop className="stop" onClick={stopRecording} />
-                                                        {isRecordingComplete && (
+                                                        {isRecordingComplete && questionStep < 5 && (
                                                             <div className="rec-btn next" onClick={handleNextQuestion}>
                                                                 다음 질문
                                                             </div>
                                                         )}
+                                                        {isRecordingComplete && questionStep === 5 && <div className="rec-btn"  onClick={() => { setCurrentProgress(4); }}>제출하기</div>}
+
                                                     </div>
                                                 </InterviewItem>
                                             )
@@ -571,7 +546,7 @@ const VoiceService = () => {
                         </SliderItem>
                     </SliderWrapper>
                 </SliderBox>
-                <div>
+                <div style={{position: "fixed", left: 0}}>
                     <h3>녹음된 오디오</h3>
                     {audioFiles.map((file, index) => (
                         <div key={index}>
@@ -582,23 +557,9 @@ const VoiceService = () => {
                         </div>
                     ))}
                 </div>
-                {/* <div>
-                    {[1, 2, 3, 4].map((i) => (
-                        <button key={i} onClick={() => setCurrentProgress(i)}>
-                            {i}번
-                        </button>
-                    ))}
-                </div>
-                <div>
-                    {[1, 2, 3, 4, 5].map((i) => (
-                        <button key={i} onClick={() => setQuestionStep(i)}>
-                            {i}번
-                        </button>
-                    ))}
-                </div> */}
             </ContentBox>
         </VoiceServiceBox>
-    )
+    );
 };
 
 export default VoiceService;
