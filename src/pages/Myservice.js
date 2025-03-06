@@ -48,6 +48,11 @@ const ResumeBox = styled.div`
     box-shadow: 0px 2px 10px 1px rgb(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
+    .empty {
+        margin: auto;
+        font-size: 24px;
+        font-weight: bold;
+    }
 `
 const ResumeItem = styled.div`
     width: 100%;
@@ -88,6 +93,10 @@ const ResumeItem = styled.div`
             &:hover {
                 background-color: #f05650;
             }
+        }
+        .disabled {
+            background-color: #f05650 !important;
+            cursor: inherit !important;
         }
     }
 `
@@ -132,6 +141,10 @@ const AccordionContent = styled.div`
         &:hover {
             background-color: var(--main-color);
         }
+    }
+    .disabled {
+        background-color: #f05650 !important;
+        cursor: inherit !important;
     }
 `;
 
@@ -259,6 +272,7 @@ const MyService = () => {
     const [createModal, setCreateModal] = useState(false);
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
+    const filteredResumeList = resumeList?.filter(item => item.deleteStatus !== true);
 
     if (isLoading) {
         return (
@@ -305,7 +319,7 @@ const MyService = () => {
         uploadResume(formData, {
             onSuccess: () => {
                 navigate('/myservice');
-                // refetch();
+                refetch();
                 setCreateModal(false);
             },
             onError: (error) => {
@@ -324,29 +338,6 @@ const MyService = () => {
             },
         });
     };
-
-    const initResume = [
-        {
-            rid: 0,
-            title: "20250225_고라파덕_이력서",
-            file_url: "UUID + title",
-            deleteStatus: true,
-            interviewList: [
-                { iid: "0", rid: 0, type: "voice", status: "done", createdat: "20250225" },
-                { iid: "1", rid: 0, type: "video", status: "done", createdat: "20250226" }
-            ]
-        },
-        {
-            rid: 1,
-            title: "20250225_뚱이_이력서",
-            file_url: "UUID + title",
-            deletestatus: false,
-            interviewList: [
-                { iid: "2", rid: 1, type: "voice", status: "done", createdat: "20250227" },
-                { iid: "3", rid: 1, type: "video", status: "진행중이에요옹", createdat: "20250228" }
-            ]
-        }
-    ];
 
     return (
         <MyServiceBox>
@@ -376,38 +367,66 @@ const MyService = () => {
                 </div>
             </ResumeModal>
             <ResumeBox>
-                <CreateBtn onClick={() => { setCreateModal(true); }}>이력서 등록</CreateBtn>
+                <CreateBtn onClick={() => {
+                    if (filteredResumeList.length >= 5) {
+                        alert('최대 5개의 이력서만 등록 가능합니다');
+                    } else {
+                        setCreateModal(true);
+                    }
+                }}>이력서 등록</CreateBtn>
                 {
-
-                    initResume.map((item, i) => {
-                        const isOpen = openIndex === item.rid;
-                        return (
-                            <ResumeItem key={item.rid}>
-                                <div className="ri-inner">
-                                    <span className="edge">{i + 1}번 이력서</span>
-                                    <span className="ri-title">{item.title}</span>
-                                    <div className="ri-button" onClick={() => handleDeleteClick(item.rid)}>DELETE</div>
-                                    <ToggleIcon isOpen={isOpen} onClick={() => toggleAccordion(item.rid)} />
-                                </div>
-                                {
-                                    item.interviewList.filter(item2 => item2.rid === item.rid).map((item2, j) => {
-                                        return (
-                                            <AccordionContent key={item2.iid} isOpen={isOpen}>
-                                                <span className="edge">{j + 1}&nbsp;&middot;&nbsp;</span>
-                                                <span className="edge">응시일자</span>
-                                                <span className="ac-text">{item2.createdat}</span>
-                                                <span className="edge">타입</span>
-                                                <span className="ac-text">{item2.type}</span>
-                                                <span className="edge">상태</span>
-                                                <span className="ac-text">{item2.status}</span>
-                                                <div className="detail-btn" onClick={() => { navigate("/myservice/" + item2.iid, { state: item2 }); window.scrollTo(0, 0); }}>상세 보기</div>
-                                            </AccordionContent>
-                                        )
-                                    })
-                                }
-                            </ResumeItem>
-                        )
-                    })
+                    filteredResumeList && filteredResumeList.length >= 0 ? (
+                        resumeList.map((item, i) => {
+                            const isOpen = openIndex === item.resumeId;
+                            return (
+                                <ResumeItem key={item.resumeId}>
+                                    <div className="ri-inner">
+                                        <span className="edge">{i + 1}번 이력서</span>
+                                        <span className="ri-title">{item.title}</span>
+                                        {
+                                            item.deleteStatus ? (
+                                                <div className="ri-button disabled">삭제 완료</div>
+                                            ) : (
+                                                <div className="ri-button" onClick={() => handleDeleteClick(item.resumeId)}>DELETE</div>
+                                            )
+                                        }
+                                        <ToggleIcon isOpen={isOpen} onClick={() => toggleAccordion(item.resumeId)} />
+                                    </div>
+                                    {
+                                        item.interviewList.filter(item2 => item2.resumeId === item.resumeId).map((item2, j) => {
+                                            return (
+                                                <AccordionContent key={item2.interviewId} isOpen={isOpen}>
+                                                    <span className="edge">{j + 1}&nbsp;&middot;&nbsp;</span>
+                                                    <span className="edge">응시일자</span>
+                                                    <span className="ac-text">{item2.created_at}</span>
+                                                    <span className="edge">타입</span>
+                                                    <span className="ac-text">{item2.interviewType}</span>
+                                                    <span className="edge">상태</span>
+                                                    <span className="ac-text">{item2.interviewStatus}</span>
+                                                    {
+                                                        item2.interviewStatus === 'COMPLETED' ? (
+                                                            <div className="detail-btn" onClick={() => {
+                                                                navigate("/myservice/" + item2.interviewId, { state: item2 });
+                                                                window.scrollTo(0, 0);
+                                                            }}>
+                                                                상세 보기
+                                                            </div>
+                                                        ) : (
+                                                            <div className="detail-btn disabled">
+                                                                결과 생성중
+                                                            </div>
+                                                        )
+                                                    }
+                                                </AccordionContent>
+                                            )
+                                        })
+                                    }
+                                </ResumeItem>
+                            )
+                        })
+                    ) : (
+                        <span className="empty">이력서를 등록해주세요 :)</span>
+                    )
                 }
             </ResumeBox>
         </MyServiceBox>

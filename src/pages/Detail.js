@@ -164,7 +164,6 @@ const Detail = () => {
     const toggleAccordion = (index) => {
         setOpenIndex(openIndex === index ? null : index);
     };
-
     if (isLoading) return (
         <DetailBox>
             <Spinner />
@@ -223,9 +222,9 @@ const Detail = () => {
                 <HeaderBox>
                     <div className="ht-box">
                         <span className="edge">응시일자</span>
-                        <span className="text">{interviewData.createdat}</span>
+                        <span className="text">{interviewData.created_at}</span>
                         <span className="edge">Type</span>
-                        <span className="text">{interviewData.type}</span>
+                        <span className="text">{interviewData.interviewType}</span>
                     </div>
                     <FaRegFilePdf className="icon" onClick={handlePrint} />
                     <div className="delete-btn" onClick={handleDelete}>Delete</div>
