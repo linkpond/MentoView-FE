@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styled from "styled-components";
 import { FaRegFilePdf } from "react-icons/fa6";
-
+import { FaMicrophone, FaStop } from "react-icons/fa";
 // MainContainer
 const VoiceServiceBox = styled.div`
     width: 100%;
@@ -306,8 +306,71 @@ const InterviewItem = styled.div`
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    padding: 20px;
+    .question-box {
+        width: fit-content;
+        height: fit-content;
+        display: flex;
+        align-items: start;
+        justify-content: center;
+        box-shadow: 0px 2px 8px 2px rgb(0, 0, 0, 0.1);
+        border-radius: 500px;
+        padding: 30px;
+        .edge {
+            color: #777;
+        }
+        .question {
+            
+        }
+    }
+    .record {
+        font-size: 70px;
+        box-shadow: 0px 0px 4px 1px rgb(0, 0, 0, 0.1);
+        padding: 10px;
+        border-radius: 100%;
+        border: 2px solid #eee;
+        color: var(--main-color);
+        cursor: pointer;
+        transition: all 0.15s;
+        &:hover {
+            box-shadow: inset 0px 0px 8px 2px rgb(0, 0, 0, 0.1);
+            filter: brightness(0.9);
+        }
+    }
+    .button-box {
+        width: fit-content;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .rec-btn {
+            width: fit-content;
+            height: fit-content;
+            font-size: 18px;
+            border: 2px solid #aaa;
+            border-radius: 4px;
+            padding: 6px 10px 6px 10px;
+            cursor: pointer;
+            margin-left: 10px;
+            box-shadow: 0px 0px 4px 1px rgb(0, 0, 0, 0.1);
+            transition: all 0.15s;
+            &:hover {
+                border: 2px solid var(--main-color);
+            }
+        }
+        .stop {
+            cursor: pointer;
+            color: red;
+            font-size: 30px;
+            transition: all 0.15s;
+            &:hover {
+                opacity: 0.5;
+            }
+        }
+    }
 `
 
 
@@ -317,55 +380,103 @@ const VoiceService = () => {
     const [resumeModal, setResumeModal] = useState(false);
     const [isQuetionLoading, setIsQuestionLoading] = useState(false);
     const [questionStep, setQuestionStep] = useState(1);
+    const [recording, setRecording] = useState(false);
+    const [audioFiles, setAudioFiles] = useState([]);
+    const [isRecordingComplete, setIsRecordingComplete] = useState(false);
+    const mediaRecorderRef = useRef(null);
+    const audioChunksRef = useRef([]);
 
     const initResume = [
         {
             rid: 0,
             title: "20250225_고라파덕_이력서",
+            file_url: "UUID + title",
+            deleteStatus: true,
+            interviewList: [
+                { iid: "0", rid: 0, type: "voice", status: "done", createdat: "20250225" },
+                { iid: "1", rid: 0, type: "video", status: "done", createdat: "20250226" }
+            ]
         },
         {
             rid: 1,
             title: "20250225_뚱이_이력서",
-        },
-        {
-            rid: 0,
-            title: "20250225_시바견_이력서",
-        },
-        {
-            rid: 1,
-            title: "20250225_담곰_이력서",
-        },
-        {
-            rid: 1,
-            title: "20250225_대장_이력서",
+            file_url: "UUID + title",
+            deleteStatus: false,
+            interviewList: [
+                { iid: "2", rid: 1, type: "voice", status: "done", createdat: "20250227" },
+                { iid: "3", rid: 1, type: "video", status: "진행중이에요옹", createdat: "20250228" }
+            ]
         }
     ];
     const initQuestion = [
         {
             qid: 0,
-            question: "당신은 사람입니까?" 
+            question: "당신은 사람입니까? 이렇게 비가오는 밤이면 ~~ 지친 그리움으로 널 만나고 이 비가 끝나고 나면 난 너를 찾아 떠나갈꺼야아"
         },
         {
-            qid: 1,
-            question: "당신은 동물입니까?" 
+            qid: 21,
+            question: "당신은 동물입니까?"
         },
         {
-            qid: 2,
-            question: "당신은 외계인입니까?" 
+            qid: 42,
+            question: "당신은 외계인입니까?"
         },
         {
-            qid: 3,
-            question: "당신은 식물입니까?" 
+            qid: 53,
+            question: "당신은 식물입니까?"
         },
         {
-            qid: 4,
-            question: "당신은 미생물입니까?" 
+            qid: 84,
+            question: "당신은 미생물입니까?"
         },
     ];
-    
+
+    const startRecording = async (qid) => {
+        if (recording) return;
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const mediaRecorder = new MediaRecorder(stream);
+            mediaRecorderRef.current = mediaRecorder;
+            audioChunksRef.current = [];
+
+            mediaRecorder.ondataavailable = (event) => {
+                audioChunksRef.current.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+                setAudioFiles((prevFiles) => [...prevFiles, { qid, audioBlob }]);
+            };
+
+            mediaRecorder.start();
+            setRecording(true);
+        } catch (error) {
+            console.error("녹음 시작 중 오류 발생:", error);
+        }
+    };
+
+
+    const stopRecording = () => {
+        if (!recording) return;
+
+        const mediaRecorder = mediaRecorderRef.current;
+
+        if (mediaRecorder) {
+            mediaRecorder.stop();
+            setRecording(false);
+            mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+            setIsRecordingComplete(true);
+        }
+    };
+
+    const handleNextQuestion = () => {
+        setQuestionStep((prevStep) => prevStep + 1);
+        setIsRecordingComplete(false);
+    };
+
     return (
         <VoiceServiceBox>
-            {/* 이력서 title값 delete 이력서 선택 disable해야함 */}
             <Overlay onClick={() => { setResumeModal(false); }} $visible={resumeModal} />
             <ResumeModal $visible={resumeModal}>
                 <span className="resume-title">{resume?.title}</span>
@@ -399,7 +510,7 @@ const VoiceService = () => {
                                         <span className="edge-title">내 이력서 목록</span>
                                     </div>
                                     {
-                                        initResume.map(item => {
+                                        initResume.filter(v => v.deleteStatus === true).map(item => {
                                             return (
                                                 <ResumeItem key={item.rid} onClick={() => { setResume(item); setResumeModal(true); }}>
                                                     <span className="ri-title">{item.title}</span>
@@ -432,10 +543,22 @@ const VoiceService = () => {
                             <InterviewBox>
                                 <InterviewWrapper step={questionStep}>
                                     {
-                                        initQuestion.map(item => {
+                                        initQuestion.map((item, i) => {
                                             return (
                                                 <InterviewItem key={item.qid}>
-                                                    {item.qid+1}번 질문
+                                                    <div className="question-box">
+                                                        <span className="edge">Q{i + 1}.</span>
+                                                        <span className="question">{item.question}</span>
+                                                    </div>
+                                                    <FaMicrophone className="record" onClick={() => { startRecording(item.qid) }} />
+                                                    <div className="button-box">
+                                                        <FaStop className="stop" onClick={stopRecording} />
+                                                        {isRecordingComplete && (
+                                                            <div className="rec-btn next" onClick={handleNextQuestion}>
+                                                                다음 질문
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </InterviewItem>
                                             )
                                         })
@@ -449,6 +572,17 @@ const VoiceService = () => {
                     </SliderWrapper>
                 </SliderBox>
                 <div>
+                    <h3>녹음된 오디오</h3>
+                    {audioFiles.map((file, index) => (
+                        <div key={index}>
+                            <span>질문 {file.qid}:</span>
+                            <audio controls>
+                                <source src={URL.createObjectURL(file.audioBlob)} type="audio/wav" />
+                            </audio>
+                        </div>
+                    ))}
+                </div>
+                {/* <div>
                     {[1, 2, 3, 4].map((i) => (
                         <button key={i} onClick={() => setCurrentProgress(i)}>
                             {i}번
@@ -461,7 +595,7 @@ const VoiceService = () => {
                             {i}번
                         </button>
                     ))}
-                </div>
+                </div> */}
             </ContentBox>
         </VoiceServiceBox>
     )
