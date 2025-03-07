@@ -1,9 +1,13 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { FaRegFilePdf } from "react-icons/fa6";
 import { FaMicrophone, FaStop } from "react-icons/fa";
 import useResumeList from "../hooks/useResumeList";
 import useInterviewQuestion from "../hooks/useInterviewQuestion";
+import useInterviewEnd from "../hooks/useInterviewEnd";
+import { setInterviewId } from "../redux/interviewSlice";
+import { useDispatch } from "react-redux";
+import useInterviewStatus from "../hooks/useInterviewStatus";
 // MainContainer
 const VoiceServiceBox = styled.div`
     width: 100%;
@@ -29,7 +33,7 @@ const ProgressLine = styled.div`
     position: absolute;
     top: 16px;
     left: 29px;
-    width: ${({ progress }) => `${(progress - 1) * 80}px`};
+    width: ${({ progress }) => `${(progress - 1) * 79}px`};
     height: 2px;
     background-color: var(--main-color);
     transform: translateY(-50%);
@@ -377,20 +381,26 @@ const InterviewItem = styled.div`
 
 
 const VoiceService = () => {
+    const dispatch = useDispatch();
     const [currentProgress, setCurrentProgress] = useState(1);
-    const [resume, setResume] = useState(null);
-    const [resumeModal, setResumeModal] = useState(false);
     const [questionStep, setQuestionStep] = useState(1);
-    const [recording, setRecording] = useState(false);
     const [audioFiles, setAudioFiles] = useState([]);
+    const [resume, setResume] = useState(null);
+    const [resumeId, setResumeId] = useState(null);
+    const [resumeModal, setResumeModal] = useState(false);
+    const [recording, setRecording] = useState(false);
     const [isRecordingComplete, setIsRecordingComplete] = useState(false);
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
     const { data: resumeList } = useResumeList();
-    const [resumeId, setResumeId] = useState(null);
-    const { data: interviewQuestions, isLoading } = useInterviewQuestion(resumeId && resumeId !== null ? resumeId : null);
-
-    const startRecording = async (qid) => {
+    const { data: interviewQuestions, isLoading, refetch } = useInterviewQuestion(resumeId && resumeId !== null ? resumeId : null);
+    const { mutate: endInterview } = useInterviewEnd();
+    useEffect(() => {
+        if (resumeId) {
+            refetch();
+        }
+    }, [resumeId]);
+    const startRecording = async (questionId) => {
         if (recording) return;
 
         try {
@@ -405,7 +415,7 @@ const VoiceService = () => {
 
             mediaRecorder.onstop = () => {
                 const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
-                setAudioFiles((prevFiles) => [...prevFiles, { qid, audioBlob }]);
+                setAudioFiles((prevFiles) => [...prevFiles, { questionId, audioBlob }]);
             };
 
             mediaRecorder.start();
@@ -444,6 +454,33 @@ const VoiceService = () => {
         setResumeModal(false);
     };
 
+    const handleSubmit = () => {
+        if (audioFiles.length === 0) {
+            console.warn("오디오 파일이 없습니다.");
+            return;
+        }
+
+        const interviewId = interviewQuestions?.[0]?.interviewId;
+
+        if (!interviewId) {
+            console.warn("interviewId가 없습니다.");
+            return;
+        }
+
+        endInterview(audioFiles, {
+            onSuccess: (data) => {
+                setCurrentProgress(4);
+                dispatch(setInterviewId(interviewId));
+            },
+            onError: (error) => {
+                console.error("업로드 실패:", error);
+                if (error.response) {
+                    console.error("서버 오류 메시지:", error.response.data);
+                }
+            },
+        });
+    };
+
     return (
         <VoiceServiceBox>
             <Overlay onClick={() => { setResumeModal(false); }} $visible={resumeModal} />
@@ -479,13 +516,19 @@ const VoiceService = () => {
                                         <span className="edge-title">내 이력서 목록</span>
                                     </div>
                                     {
-                                        resumeList?.filter(v => v.deleteStatus !== true).map(item => {
-                                            return (
-                                                <ResumeItem key={item.rid} onClick={() => handleResumeSelect(item)}>
-                                                    <span className="ri-title">{item.title}</span>
-                                                </ResumeItem>
-                                            )
-                                        })
+                                        resumeList?.filter(v => v.deleteStatus !== true).length === 0 ? (
+                                            <ResumeItem>
+                                                <span className="ri-title">이력서를 등록 후 이용해주세요</span>
+                                            </ResumeItem>
+                                        ) : (
+                                            resumeList
+                                                .filter(v => v.deleteStatus !== true)
+                                                .map(item => (
+                                                    <ResumeItem key={item.rid} onClick={() => handleResumeSelect(item)}>
+                                                        <span className="ri-title">{item.title}</span>
+                                                    </ResumeItem>
+                                                ))
+                                        )
                                     }
                                 </div>
                             </ResumeBox>
@@ -501,7 +544,7 @@ const VoiceService = () => {
                                             <span className="spin-title">잠시 숨을 고르고 면접을 준비해주세요</span>
                                         </>
                                         :
-                                        <>{console.log(interviewQuestions)} {console.log(resumeId)}
+                                        <>
                                             <span className="iv-title">질문이 생성되었습니다</span>
                                             <div className="iv-btn" onClick={() => { setCurrentProgress(3); }}>면접 시작하기</div>
                                         </>
@@ -514,14 +557,14 @@ const VoiceService = () => {
                                     {
                                         interviewQuestions?.map((item, i) => {
                                             return (
-                                                <InterviewItem key={item.qestionId}>
+                                                <InterviewItem key={item.questionId}>
                                                     <div className="question-box">
                                                         <span className="edge">Q{i + 1}.</span>
                                                         <span className="question">{item.question}</span>
                                                     </div>
                                                     <FaMicrophone
                                                         className="record"
-                                                        onClick={isRecordingComplete ? undefined : () => startRecording(item.qid)}
+                                                        onClick={isRecordingComplete ? undefined : () => startRecording(item.questionId)}
                                                         style={{ cursor: isRecordingComplete ? "default" : "pointer", opacity: isRecordingComplete ? 0.5 : 1 }}
                                                     />
                                                     <div className="button-box">
@@ -531,8 +574,9 @@ const VoiceService = () => {
                                                                 다음 질문
                                                             </div>
                                                         )}
-                                                        {isRecordingComplete && questionStep === 5 && <div className="rec-btn"  onClick={() => { setCurrentProgress(4); }}>제출하기</div>}
-
+                                                        {isRecordingComplete && questionStep === 5 &&
+                                                            <div className="rec-btn" onClick={handleSubmit}>제출하기</div>
+                                                        }
                                                     </div>
                                                 </InterviewItem>
                                             )
@@ -546,17 +590,6 @@ const VoiceService = () => {
                         </SliderItem>
                     </SliderWrapper>
                 </SliderBox>
-                <div style={{position: "fixed", left: 0}}>
-                    <h3>녹음된 오디오</h3>
-                    {audioFiles.map((file, index) => (
-                        <div key={index}>
-                            <span>질문 {file.qid}:</span>
-                            <audio controls>
-                                <source src={URL.createObjectURL(file.audioBlob)} type="audio/wav" />
-                            </audio>
-                        </div>
-                    ))}
-                </div>
             </ContentBox>
         </VoiceServiceBox>
     );

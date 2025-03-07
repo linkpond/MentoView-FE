@@ -18,7 +18,7 @@ const useInterviewQuestion = (resumeId) => {
 
     });
 
-    return { data: query.data, isLoading: query.isLoading, isError: query.isError };
+    return { data: query.data, isLoading: query.isLoading, isError: query.isError, refetch: query.refetch };
 };
 
 export default useInterviewQuestion;

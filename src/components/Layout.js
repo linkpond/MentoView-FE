@@ -4,6 +4,7 @@ import GlobalStyles from "../styles/GlobalStyles";
 import Nav from "./Nav";
 import Footer from "./Footer";
 import Back from "./Back";
+import InterviewToast from "./InterviewToast";
 
 const LayoutContainer = styled.div`
   width: 100%;
@@ -32,6 +33,7 @@ const Layout = () => {
         <Outlet />
         <Footer />
         <Back />
+        <InterviewToast />
       </LayoutContainer>
     </>
   );

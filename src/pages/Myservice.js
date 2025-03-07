@@ -9,13 +9,13 @@ import useDeleteResume from "../hooks/useDeleteResume";
 
 const MyServiceBox = styled.div`
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: #eee;
-    padding: 0px 200px 0px 200px;
+    padding: 20px 200px 20px 200px;
 `
 const CreateBtn = styled.div`
     position: absolute;
