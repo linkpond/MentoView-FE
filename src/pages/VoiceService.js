@@ -522,7 +522,7 @@ const VoiceService = () => {
                                             </ResumeItem>
                                         ) : (
                                             resumeList
-                                                .filter(v => v.deleteStatus !== true)
+                                                ?.filter(v => v.deleteStatus !== true)
                                                 .map(item => (
                                                     <ResumeItem key={item.rid} onClick={() => handleResumeSelect(item)}>
                                                         <span className="ri-title">{item.title}</span>
