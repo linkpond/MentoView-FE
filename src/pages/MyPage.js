@@ -253,7 +253,7 @@ const Subscription = () => {
                 billingKeyMethod: "EASY_PAY",
                 issueName: "유료 이용권 빌링키",
                 customer: { customerId: "1" },
-                noticeUrls: ["https://ea54-180-69-98-167.ngrok-free.app/api/webhook/billingkey"]
+                noticeUrls: ["https://bba8-58-123-254-149.ngrok-free.app/api/webhook/billingkey"]
             });
     
             console.log(issueResponse);
@@ -275,7 +275,7 @@ const Subscription = () => {
     // ✅ 구독 요청 함수
     async function requestSubscription() {
         try {
-            const response = await fetch("https://9f07-58-123-254-149.ngrok-free.app/api/subscription", {
+            const response = await fetch("https://bba8-58-123-254-149.ngrok-free.app/api/subscription", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 mode: "cors"
