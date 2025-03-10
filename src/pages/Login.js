@@ -2,8 +2,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { useFormLoginInfo } from "../hooks/useFormLoginInfo.js";
-import { useGoogleAuth } from "../hooks/useGoogleLogin.js";
+import { useSubmitLoginRequest } from "../hooks/useSubmitLoginRequest.js";
 import { setUser } from "../redux/authSlice.js";
 
 const LoginBox = styled.div`
@@ -88,8 +87,7 @@ const LoginBtn = styled.div`
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { mutate: login, isLoading, error } = useFormLoginInfo();
-    const { refetch: fetchGoogleAuthUrl } = useGoogleAuth();
+    const { mutate: login, isLoading, error } = useSubmitLoginRequest();
 
     useEffect(() => {
         const token = sessionStorage.getItem("token");
@@ -105,26 +103,11 @@ const Login = () => {
     };
 
     const handleFormLogin = () => {
-        login(formData, {
-            onSuccess: (data) => {
-                sessionStorage.setItem("token", data.token);
-                dispatch(setUser(data));
-            },
-            onError: (err) => {
-                console.error("❌ 로그인 실패:", err.response?.data || err.message);
-            },
-        });
+        login(formData);
     };
 
-    const handleGoogleLogin = async () => {
-        try {
-            const { data } = await fetchGoogleAuthUrl();
-            if (data?.authUrl) {
-                window.location.href = data.authUrl;
-            }
-        } catch (error) {
-            console.error("❌ Google 로그인 실패:", error);
-        }
+    const handleGoogleLogin = () => {
+        window.location.href = "http://localhost:8080/oauth2/authorization/google";
     };
 
     return (

@@ -12,8 +12,12 @@ import Detail from "./pages/Detail";
 import MyPage from "./pages/MyPage.js"
 import VoiceService from "./pages/VoiceService.js";
 import GoogleLogin from "./components/GoogleLogin.js";
+import FormLogin from "./components/FormLogin.js";
+import { useTokenRefresh } from "./hooks/useTokenRefresh.js";
 
 function App() {
+  useTokenRefresh();
+  
   return (
     <Router>
       <Routes>
@@ -31,6 +35,7 @@ function App() {
           <Route path="/mypage" element={<MyPage />} />
         </Route>
         <Route path="/google-login" element={<GoogleLogin />} />
+        <Route path="/form-login" element={<FormLogin />} />
       </Routes>
     </Router>
   );

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { setUser } from "../redux/authSlice";
 
-const fetchGoogleUserInfo = async () => {
+const fetchFormUserInfo = async () => {
     const token = sessionStorage.getItem("token")?.trim();
     console.log(token);
     if (!token) throw new Error("No token");
@@ -15,11 +15,11 @@ const fetchGoogleUserInfo = async () => {
     return data;
 };
 
-export const useGoogleUserInfo = () => {
+export const useFormUserInfo = () => {
     const dispatch = useDispatch();
 
     return useQuery({
-        queryKey: ["googleUserInfo"],
+        queryKey: ["formUserInfo"],
         queryFn: async () => {
             const storedUser = sessionStorage.getItem("user");
             if (storedUser) {
@@ -27,7 +27,7 @@ export const useGoogleUserInfo = () => {
                 dispatch(setUser(user));
                 return user;
             }
-            const data = await fetchGoogleUserInfo();
+            const data = await fetchFormUserInfo();
             dispatch(setUser(data));
             return data;
         },
