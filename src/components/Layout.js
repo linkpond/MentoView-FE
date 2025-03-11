@@ -5,6 +5,7 @@ import Nav from "./Nav";
 import Footer from "./Footer";
 import Back from "./Back";
 import InterviewToast from "./InterviewToast";
+import { useTokenRefresh } from "../hooks/useTokenRefresh";
 
 const LayoutContainer = styled.div`
   width: 100%;
@@ -24,9 +25,10 @@ const LayoutContainer = styled.div`
 const Layout = () => {
   const location = useLocation();
   const hasBackground = location.pathname === "/";
-
+  useTokenRefresh();
   return (
     <>
+    
       <GlobalStyles />
       <LayoutContainer hasBackground={hasBackground}>
         <Nav />

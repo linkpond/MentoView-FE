@@ -13,10 +13,8 @@ import MyPage from "./pages/MyPage.js"
 import VoiceService from "./pages/VoiceService.js";
 import GoogleLogin from "./components/GoogleLogin.js";
 import FormLogin from "./components/FormLogin.js";
-import { useTokenRefresh } from "./hooks/useTokenRefresh.js";
 
 function App() {
-  useTokenRefresh();
   
   return (
     <Router>

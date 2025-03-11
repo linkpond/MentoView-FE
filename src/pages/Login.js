@@ -1,9 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useSubmitLoginRequest } from "../hooks/useSubmitLoginRequest.js";
-import { setUser } from "../redux/authSlice.js";
 
 const LoginBox = styled.div`
     width: 100%;
@@ -86,7 +84,6 @@ const LoginBtn = styled.div`
 
 const Login = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const { mutate: login, isLoading, error } = useSubmitLoginRequest();
 
     useEffect(() => {
