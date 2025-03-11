@@ -2,6 +2,10 @@ import styled from "styled-components";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import React, { useState } from "react";
 import { FaRegCreditCard, FaCheckCircle } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../redux/authSlice";
+import useModifyPassword from "../hooks/useModifyPassword";
 
 // Mypage
 const MyPageBox = styled.div`
@@ -244,7 +248,7 @@ const Subscription = () => {
             alert("결제 모듈이 로드되지 않았습니다. 잠시 후 다시 시도해주세요.");
             return;
         }
-    
+
         try {
             // 빌링키 발급
             const issueResponse = await window.PortOne.requestIssueBillingKey({
@@ -253,45 +257,45 @@ const Subscription = () => {
                 billingKeyMethod: "EASY_PAY",
                 issueName: "유료 이용권 빌링키",
                 customer: { customerId: "1" },
-                noticeUrls: ["https://bba8-58-123-254-149.ngrok-free.app/api/webhook/billingkey"]
+                noticeUrls: ["https://da14-58-123-254-149.ngrok-free.app/api/webhook/billingkey"]
             });
-    
+
             console.log(issueResponse);
-    
+
             if (issueResponse.code !== undefined) {
                 return alert(issueResponse.message);
             } else {
                 alert("✅ 빌링키 발급 성공!");
-    
+
                 // ✅ 빌링키 발급 성공 시 구독 요청 실행
                 await requestSubscription();
             }
-    
+
         } catch (error) {
             console.error("❌ 결제 요청 중 오류 발생:", error);
         }
     }
-    
+
     // ✅ 구독 요청 함수
     async function requestSubscription() {
         try {
-            const response = await fetch("https://bba8-58-123-254-149.ngrok-free.app/api/subscription", {
+            const response = await fetch("https://da14-58-123-254-149.ngrok-free.app/api/subscription", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 mode: "cors"
             });
-    
+
             if (!response.ok) {
                 throw new Error("구독 요청 실패");
             }
-    
+
             const data = await response.json();
             console.log("✅ 구독 요청 성공:", data);
         } catch (error) {
             console.error("❌ 구독 요청 중 오류 발생:", error);
         }
     }
-    
+
 
     return (
         <TabContentItem>
@@ -367,9 +371,52 @@ const Payment = () => {
     );
 };
 const ChangePassword = () => {
+    const modifyPasswordMutation = useModifyPassword();
+    const [passwords, setPasswords] = useState({
+        beforePassword: "",
+        afterPassword: "",
+        afterPasswordCheck: "",
+    });
+    const handleChange = (e) => {
+        setPasswords({ ...passwords, [e.target.name]: e.target.value });
+    };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        modifyPasswordMutation.mutate(passwords, {
+            onSuccess: (data) => {
+                alert("비밀번호 변경 성공!");
+            },
+            onError: (error) => {
+                alert(error.response?.data || "비밀번호 변경 실패");
+            },
+        });
+    };
     return (
         <TabContentItem>
-            비밀번호 변경 화면
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="password"
+                    name="beforePassword"
+                    placeholder="현재 비밀번호"
+                    value={passwords.beforePassword}
+                    onChange={handleChange}
+                />
+                <input
+                    type="password"
+                    name="afterPassword"
+                    placeholder="새 비밀번호"
+                    value={passwords.afterPassword}
+                    onChange={handleChange}
+                />
+                <input
+                    type="password"
+                    name="afterPasswordCheck"
+                    placeholder="새 비밀번호 확인"
+                    value={passwords.afterPasswordCheck}
+                    onChange={handleChange}
+                />
+                <button type="submit">비밀번호 변경</button>
+            </form>
         </TabContentItem>
     );
 };
@@ -391,6 +438,15 @@ const tabContents = {
 
 const MyPage = () => {
     const [activeTab, setActiveTab] = useState("구독 관리");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("token");
+        dispatch(logout());
+        navigate("/");
+    };
 
     const initData = [
         {
@@ -472,7 +528,7 @@ const MyPage = () => {
                             {tab}
                         </TabItem>
                     ))}
-                    <RiLogoutBoxLine className="logout" />
+                    <RiLogoutBoxLine className="logout" onClick={handleLogout} />
                     <img className="logo" src={process.env.PUBLIC_URL + "/logo.png"} alt="logo" />
                 </MyPageTab>
                 <TabContentBox>
