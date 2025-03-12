@@ -172,7 +172,7 @@ const Subscription = () => {
     const handlePayment = () => {
         issueBillingKey(undefined, {
             onSuccess: async (data) => {
-                alert("빌링키 발급완료 ^ㅇ^")
+                alert("아이행보케")
                 setTimeout(() => {
                     requestSubscription(undefined, {
                         onSuccess: (subscriptionData) => {
@@ -184,7 +184,7 @@ const Subscription = () => {
                         },
                     });
     
-                }, 3000);
+                }, 2000);
             },
             onError: (error) => {
                 alert(`Billing Key 요청 실패: ${error.message}`);
