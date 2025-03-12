@@ -3,7 +3,7 @@ on:
   # workflow_dispatch
   push:
     branches:
-      - dev
+      - test
 jobs:
   ci:
     runs-on: ubuntu-latest
