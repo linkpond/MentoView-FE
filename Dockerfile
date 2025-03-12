@@ -7,6 +7,7 @@ RUN npm run build
 
 FROM nginx:latest
 COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/public/robots.txt /usr/share/nginx/html/robots.txt
 
 RUN echo 'server { \
     listen 80; \
@@ -18,6 +19,9 @@ RUN echo 'server { \
     } \
     location = /sitemap.xml { \
         add_header Content-Type application/xml; \
+    } \
+    location = /robots.txt { \
+        add_header Content-Type text/plain; \
     } \
 }' > /etc/nginx/conf.d/default.conf
 
