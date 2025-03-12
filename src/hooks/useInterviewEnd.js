@@ -10,7 +10,7 @@ const uploadInterviewFiles = async (audioFiles) => {
     });
 
     try {
-        const response = await axios.post("http://localhost:8080/api/interview/end", formData, {
+        const response = await axios.post("https://mentoview.site/api/interview/end", formData, {
             headers: { "Content-Type": "multipart/form-data" },
         });
         return response.data;

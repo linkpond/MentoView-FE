@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const fetchInterviewQuestions = async (resumeId) => {
     try {
-        const response = await axios.post('http://localhost:8080/api/interview/start', { resumeId });
+        const response = await axios.post('https://mentoview.site/api/interview/start', { resumeId });
         return response.data;
     } catch (error) {
         throw new Error('인터뷰 질문 가져오기 실패');

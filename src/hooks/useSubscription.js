@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
 const requestSubscription = async () => {
-  const response = await axios.post("https://da14-58-123-254-149.ngrok-free.app/api/subscription", {}, {
+  const response = await axios.post("https://mentoview.site/api/subscription", {}, {
   });
 
   return response.data;

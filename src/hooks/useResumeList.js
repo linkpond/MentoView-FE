@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 const fetchResumes = async () => {
-    const { data } = await axios.get('http://localhost:8080/api/resume');
+    const { data } = await axios.get('https://mentoview.site/api/resume');
     return data;
 };
 

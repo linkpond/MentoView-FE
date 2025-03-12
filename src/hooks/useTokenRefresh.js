@@ -10,7 +10,7 @@ const refreshAccessToken = async (dispatch, navigate) => {
         if (!token) return;
 
         const response = await axios.post(
-            "http://localhost:8080/api/token/access", 
+            "https://mentoview.site/api/token/access", 
             {},
             {
                 headers: {

@@ -8,7 +8,7 @@ const fetchFormUserInfo = async () => {
     console.log(token);
     if (!token) throw new Error("No token");
 
-    const { data } = await axios.get("http://localhost:8080/api/auth/me", {
+    const { data } = await axios.get("https://mentoview.site/api/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
     });
 

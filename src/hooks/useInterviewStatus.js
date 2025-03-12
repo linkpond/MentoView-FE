@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 const fetchInterviewStatus = async (interviewId) => {
-    const response = await axios.get(`http://localhost:8080/api/interview/${interviewId}/status`);
+    const response = await axios.get(`https://mentoview.site/api/interview/${interviewId}/status`);
     return response.data;
 };
 

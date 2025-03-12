@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
 const deleteResume = async (resumeId) => {
-    await axios.delete(`http://localhost:8080/api/resume/${resumeId}`);
+    await axios.delete(`https://mentoview.site/api/resume/${resumeId}`);
 };
 
 const useDeleteResume = () => {

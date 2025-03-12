@@ -11,7 +11,7 @@ const issueBillingKey = async () => {
     billingKeyMethod: "EASY_PAY",
     issueName: "유료 이용권 빌링키",
     customer: { customerId: "1" },
-    noticeUrls: ["https://da14-58-123-254-149.ngrok-free.app/api/webhook/billingkey"]
+    noticeUrls: ["https://mentoview.site/api/webhook/billingkey"]
   });
 
   if (issueResponse.code !== undefined) {
