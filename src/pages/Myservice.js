@@ -368,14 +368,14 @@ const MyService = () => {
             </ResumeModal>
             <ResumeBox>
                 <CreateBtn onClick={() => {
-                    if (filteredResumeList.length >= 5) {
+                    if (filteredResumeList?.length >= 5) {
                         alert('최대 5개의 이력서만 등록 가능합니다');
                     } else {
                         setCreateModal(true);
                     }
                 }}>이력서 등록</CreateBtn>
                 {
-                    filteredResumeList && filteredResumeList.length > 0 ? (
+                    filteredResumeList && filteredResumeList?.length > 0 ? (
                         resumeList.map((item, i) => {
                             const isOpen = openIndex === item.resumeId;
                             return (
