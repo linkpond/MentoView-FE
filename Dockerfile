@@ -16,6 +16,9 @@ RUN echo 'server { \
     location / { \
         try_files $uri /index.html; \
     } \
+    location = /sitemap.xml { \
+        add_header Content-Type application/xml; \
+    } \
 }' > /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
