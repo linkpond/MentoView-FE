@@ -5,14 +5,20 @@ import { setUser } from "../redux/authSlice";
 
 const fetchGoogleUserInfo = async () => {
     const token = sessionStorage.getItem("token")?.trim();
-    console.log(token);
     if (!token) throw new Error("No token");
 
-    const { data } = await axios.get("http://localhost:8080/api/auth/me", {
+    const response = await axios.get("http://localhost:8080/api/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
     });
 
-    return data;
+    const newAccessToken = response.headers["authorization"];
+    if (newAccessToken) {
+        sessionStorage.removeItem("token");
+        sessionStorage.setItem("token", newAccessToken.replace("Bearer ", ""));
+
+    }
+
+    return response.data;
 };
 
 export const useGoogleUserInfo = () => {
