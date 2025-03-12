@@ -347,7 +347,8 @@ const InterviewItem = styled.div`
         }
     }
     .button-box {
-        width: fit-content;
+        position: relative;
+        width: 100%;
         height: fit-content;
         display: flex;
         align-items: center;
@@ -375,6 +376,13 @@ const InterviewItem = styled.div`
             &:hover {
                 opacity: 0.5;
             }
+        }
+        .status-box {
+            position: absolute;
+            top: -60px;
+            width: fit-content;
+            height: fit-content;;
+            font-size: 18px;
         }
     }
 `
@@ -480,7 +488,13 @@ const VoiceService = () => {
             },
         });
     };
-
+    const initQuestion = [
+        { questionId: 1, question: "첫 번째 질문" },
+        { questionId: 2, question: "두 번째 질문" },
+        { questionId: 3, question: "두 번째 질문" },
+        { questionId: 4, question: "두 번째 질문" },
+        { questionId: 5, question: "두 번째 질문" },
+    ];
     return (
         <VoiceServiceBox>
             <Overlay onClick={() => { setResumeModal(false); }} $visible={resumeModal} />
@@ -555,7 +569,8 @@ const VoiceService = () => {
                             <InterviewBox>
                                 <InterviewWrapper step={questionStep}>
                                     {
-                                        interviewQuestions?.map((item, i) => {
+                                        // interviewQuestions?.map((item, i) => {
+                                        initQuestion.map((item, i) => {
                                             return (
                                                 <InterviewItem key={item.questionId}>
                                                     <div className="question-box">
@@ -577,6 +592,24 @@ const VoiceService = () => {
                                                         {isRecordingComplete && questionStep === 5 &&
                                                             <div className="rec-btn" onClick={handleSubmit}>제출하기</div>
                                                         }
+                                                        <div className="status-box">
+                                                            {
+                                                                recording && recording &&
+                                                                <span className="status">녹음중입니다. 답변 후 하단의 정지버튼을 눌러주세요</span>
+                                                            }
+                                                            {
+                                                                !recording && !isRecordingComplete &&
+                                                                <span className="status">질문을 잘 읽고 상단의 녹음버튼을 눌러주세요</span>
+                                                            }
+                                                            {
+                                                                isRecordingComplete && questionStep < 5 &&
+                                                                <span className="status">녹음이 완료되었습니다. 하단의 다음 질문 버튼을 눌러주세요</span>
+                                                            }
+                                                            {
+                                                                isRecordingComplete && questionStep === 5 &&
+                                                                <span className="status">면접이 완료되었습니다. 하단의 제출하기 버튼을 눌러주세요</span>
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </InterviewItem>
                                             )
