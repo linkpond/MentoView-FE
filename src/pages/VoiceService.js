@@ -488,13 +488,7 @@ const VoiceService = () => {
             },
         });
     };
-    const initQuestion = [
-        { questionId: 1, question: "첫 번째 질문" },
-        { questionId: 2, question: "두 번째 질문" },
-        { questionId: 3, question: "두 번째 질문" },
-        { questionId: 4, question: "두 번째 질문" },
-        { questionId: 5, question: "두 번째 질문" },
-    ];
+
     return (
         <VoiceServiceBox>
             <Overlay onClick={() => { setResumeModal(false); }} $visible={resumeModal} />
@@ -569,8 +563,7 @@ const VoiceService = () => {
                             <InterviewBox>
                                 <InterviewWrapper step={questionStep}>
                                     {
-                                        // interviewQuestions?.map((item, i) => {
-                                        initQuestion.map((item, i) => {
+                                        interviewQuestions?.map((item, i) => {
                                             return (
                                                 <InterviewItem key={item.questionId}>
                                                     <div className="question-box">
