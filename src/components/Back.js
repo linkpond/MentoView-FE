@@ -4,13 +4,13 @@ import styled from "styled-components";
 
 const BackBtn = styled(FaChevronLeft)`
     position: fixed;
-    bottom: 50px;
+    bottom: 60px;
     right: 50px;
     background-color: transparent;
     border: 2px solid var(--main-color);
     font-size: 50px;
     color: var(--main-color);
-    border-radius: 4px;
+    border-radius: 100%;
     padding: 10px;
     cursor: pointer;
     transition: all 0.2s;
