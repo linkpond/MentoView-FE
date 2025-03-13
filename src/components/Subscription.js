@@ -4,6 +4,7 @@ import useCancelSubscription from "../hooks/useCancelSubscription";
 import useSubscription from "../hooks/useSubscription";
 import useSubscriptionStatus from "../hooks/useSubscriptionStatus";
 import styled from "styled-components";
+import { useState } from "react";
 
 const TabContentItem = styled.div`
     width: 100%;
@@ -163,12 +164,108 @@ const SubscriptionItemBox = styled.div`
         }
     }
 `
+const Overlay = styled.div`
+    z-index: 998;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    opacity: ${({ $visible }) => ($visible ? "1" : "0")};
+    pointer-events: ${({ $visible }) => ($visible ? "auto" : "none")};
+    transition: opacity 0.3s ease-in-out;
+`;
+
+const CancelModal = styled.div`
+    position: fixed;
+    top: 40%;
+    z-index: 999;
+    width: 350px;
+    height: fit-content;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 4px;
+    box-shadow: 0px 0px 4px 1px rgba(255, 255, 255);
+    background-color: #fff;
+    opacity: ${({ $visible }) => ($visible ? "1" : "0")};
+    transform: ${({ $visible }) => ($visible ? "scale(1)" : "scale(0.95)")};
+    pointer-events: ${({ $visible }) => ($visible ? "auto" : "none")};
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    .cancel-box {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        .cancel-text {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    }
+    .btn-box {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+    }
+`;
+
+const XBtn = styled.div`
+    border-radius: 4px;
+    background-color: #fff;
+    color: #f05650;
+    border: 2px solid #f05650;
+    padding: 4px 10px 4px 10px;
+    margin-left: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.15s;
+    &:hover {
+        background-color: #f05650;
+        color: #fff;
+    }
+`
+
+const OkBtn = styled(XBtn)`
+    color: var(--main-color);
+    border: 2px solid var(--main-color);
+    &:hover {
+        background-color: var(--main-color);
+        color: #fff;
+    }
+`
+const Input = styled.input`
+    width: 100%;
+    height: 30px;
+    border: 2px solid #eee;
+    border-radius: 4px;
+    margin: 10px;
+    padding-left: 10px;
+    outline: none;
+    font-size: 13px;
+    transition: all 0.15s;
+    &:focus {
+        border: 2px solid var(--main-color);
+    }
+    &::placeholder {
+        font-size: 13px;
+    }
+`
+
 const Subscription = () => {
     const { data: subscriptionData, refetch } = useSubscriptionStatus();
     const activeSubscription = subscriptionData?.find(sub => sub.status === "ACTIVE");
     const { mutate: cancelSubscription } = useCancelSubscription();
     const { mutate: requestSubscription } = useSubscription();
     const { mutate: issueBillingKey } = useBillingKey();
+    const [open, setOpen] = useState();
+    const [inputValue, setInputValue] = useState("");
     const handlePayment = () => {
         issueBillingKey(undefined, {
             onSuccess: async (data) => {
@@ -183,7 +280,6 @@ const Subscription = () => {
                             alert(`구독 요청 실패: ${error.message}`);
                         },
                     });
-    
                 }, 2000);
             },
             onError: (error) => {
@@ -191,19 +287,40 @@ const Subscription = () => {
             },
         });
     };
-    
-
 
     const handleCancelSubscription = () => {
-        cancelSubscription(activeSubscription.subId, {
-            onSuccess: () => {
-                alert("이용권 해지가 완료되었습니다.");
-            },
-        });
+        if (inputValue === "해지") {
+            cancelSubscription(activeSubscription?.subId, {
+                onSuccess: () => {
+                    alert("이용권 해지가 완료되었습니다.");
+                    setOpen(false);
+                    setInputValue("");
+                },
+            });
+        } else {
+            alert(`"해지" 를 입력해주세요`);
+        }
     };
 
     return (
         <TabContentItem>
+            <Overlay onClick={() => { setOpen(false); }} $visible={open} />
+            <CancelModal $visible={open}>
+                <div className="cancel-box">
+                    <span className="cancel-text">정말로 이용권을 해지하시겠습니까?</span>
+                    <span className="cancel-text">하단에 "해지" 를 입력해주세요</span>
+                    <Input
+                        type="text"
+                        placeholder="해지"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                    />
+                </div>
+                <div className="btn-box">
+                    <XBtn onClick={() => { setOpen(false); }}>취소</XBtn>
+                    <OkBtn onClick={handleCancelSubscription}>확인</OkBtn>
+                </div>
+            </CancelModal>
             <SubscriptionHeader>
                 {activeSubscription ? (
                     <>
@@ -211,7 +328,7 @@ const Subscription = () => {
                         <div className="plan-edge">{activeSubscription.plan}</div>
                         <span className="edge">다음 자동 결제일</span>
                         <div className="date">{activeSubscription.nextBillingDate}</div>
-                        <div className="plan-cancel" onClick={handleCancelSubscription}>해지하기</div>
+                        <div className="plan-cancel" onClick={() => { setOpen(true); }}>해지하기</div>
                     </>
                 ) : (
                     <span className="edge">구매하신 이용권이 존재하지 않습니다.</span>

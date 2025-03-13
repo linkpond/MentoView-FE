@@ -8,6 +8,7 @@ import useInterviewEnd from "../hooks/useInterviewEnd";
 import { setInterviewId } from "../redux/interviewSlice";
 import { useDispatch } from "react-redux";
 import useInterviewStatus from "../hooks/useInterviewStatus";
+import { useNavigate } from "react-router-dom";
 // MainContainer
 const VoiceServiceBox = styled.div`
     width: 100%;
@@ -347,7 +348,8 @@ const InterviewItem = styled.div`
         }
     }
     .button-box {
-        width: fit-content;
+        position: relative;
+        width: 100%;
         height: fit-content;
         display: flex;
         align-items: center;
@@ -376,6 +378,13 @@ const InterviewItem = styled.div`
                 opacity: 0.5;
             }
         }
+        .status-box {
+            position: absolute;
+            top: -60px;
+            width: fit-content;
+            height: fit-content;;
+            font-size: 18px;
+        }
     }
 `
 
@@ -392,14 +401,23 @@ const VoiceService = () => {
     const [isRecordingComplete, setIsRecordingComplete] = useState(false);
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
+    const navigate = useNavigate();
     const { data: resumeList } = useResumeList();
     const { data: interviewQuestions, isLoading, refetch } = useInterviewQuestion(resumeId && resumeId !== null ? resumeId : null);
     const { mutate: endInterview } = useInterviewEnd();
+    const filteredResumeList = resumeList?.filter(item => item.deleteStatus !== true);
     useEffect(() => {
         if (resumeId) {
             refetch();
         }
     }, [resumeId]);
+
+    useEffect(() => {
+        if (!resumeList || filteredResumeList.length === 0) {
+            alert("사용 가능한 이력서가 없습니다. 등록 후 이용해주세요");
+            navigate("/myservice");
+        }
+    }, [resumeList, filteredResumeList, navigate]);
     const startRecording = async (questionId) => {
         if (recording) return;
 
@@ -577,6 +595,24 @@ const VoiceService = () => {
                                                         {isRecordingComplete && questionStep === 5 &&
                                                             <div className="rec-btn" onClick={handleSubmit}>제출하기</div>
                                                         }
+                                                        <div className="status-box">
+                                                            {
+                                                                recording && recording &&
+                                                                <span className="status">녹음중입니다. 답변 후 하단의 정지버튼을 눌러주세요</span>
+                                                            }
+                                                            {
+                                                                !recording && !isRecordingComplete &&
+                                                                <span className="status">질문을 잘 읽고 상단의 녹음버튼을 눌러주세요</span>
+                                                            }
+                                                            {
+                                                                isRecordingComplete && questionStep < 5 &&
+                                                                <span className="status">녹음이 완료되었습니다. 하단의 다음 질문 버튼을 눌러주세요</span>
+                                                            }
+                                                            {
+                                                                isRecordingComplete && questionStep === 5 &&
+                                                                <span className="status">면접이 완료되었습니다. 하단의 제출하기 버튼을 눌러주세요</span>
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </InterviewItem>
                                             )
