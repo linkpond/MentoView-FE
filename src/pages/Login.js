@@ -34,6 +34,14 @@ const LoginForm = styled.div`
     border: 2px solid #eee;
     border-radius: 4px;
     padding: 10px;
+    .error {
+        width: 100%;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: red;
+    }
 `;
 
 const Input = styled.input`
@@ -111,14 +119,14 @@ const Login = () => {
         <LoginBox>
             <LoginForm>
                 <img className="logo" src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" onClick={() => { navigate("/") }} />
-                <Input type="text" name="email" placeholder="ID" onChange={handleChange} />
+                <Input type="text" name="email" placeholder="EMAIL" onChange={handleChange} />
                 <Input type="password" name="password" placeholder="PW" onChange={handleChange} />
+                <div className="error">{error && "아이디 혹은 비밀번호가 일치하지 않습니다."}</div>
                 <ButtonBox>
-                    <LoginBtn onClick={handleFormLogin} disabled={isLoading}>Login</LoginBtn>
-                    <LoginBtn onClick={handleGoogleLogin}>Social Login</LoginBtn>
+                    <LoginBtn onClick={handleFormLogin} disabled={isLoading}>LOGIN</LoginBtn>
+                    <LoginBtn onClick={handleGoogleLogin}>SOCIAL LOGIN</LoginBtn>
                 </ButtonBox>
-                {error && <div style={{ color: "red" }}>❌ {error.message}</div>}
-                <span className="signup" onClick={() => { navigate("/signup") }}>Signup</span>
+                <span className="signup" onClick={() => { navigate("/signup") }}>SIGNUP</span>
             </LoginForm>
         </LoginBox>
     );
