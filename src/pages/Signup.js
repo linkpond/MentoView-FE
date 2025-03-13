@@ -143,7 +143,14 @@ const SButton = styled.button`
 function Certification({ certified, setCertified }) {
     function onClickCertification() {
         const { IMP } = window;
-        IMP.init('imp65666422');
+        const iamportCode = process.env.REACT_APP_IAMPORT_CODE;
+        
+        if (!iamportCode) {
+            console.error("아임포트 코드가 설정되지 않았습니다.");
+            return;
+        }
+
+        IMP.init(iamportCode);
 
         const data = {
             merchant_uid: `mid_${new Date().getTime()}`,
