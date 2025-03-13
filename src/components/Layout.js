@@ -25,7 +25,7 @@ const LayoutContainer = styled.div`
 const Layout = () => {
   const location = useLocation();
   const hasBackground = location.pathname === "/";
-  // useTokenRefresh();
+  useTokenRefresh();
   return (
     <>
     
