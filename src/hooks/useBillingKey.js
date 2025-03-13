@@ -6,8 +6,8 @@ const issueBillingKey = async () => {
   }
 
   const issueResponse = await window.PortOne.requestIssueBillingKey({
-    storeId: "store-81df2168-b212-4d11-a72d-c6b75e28ae3f",
-    channelKey: "channel-key-b7a18697-825c-4a49-b227-78b4ca252ad5",
+    storeId: process.env.REACT_APP_PORTONE_STORE_ID,
+    channelKey: process.env.REACT_APP_PORTONE_CHANNEL_KEY,
     billingKeyMethod: "EASY_PAY",
     issueName: "유료 이용권 빌링키",
     customer: { customerId: "1" },
