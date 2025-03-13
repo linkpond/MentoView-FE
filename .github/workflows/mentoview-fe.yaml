@@ -1,9 +1,9 @@
 name: App with Github Actions, mentoview
 on:
-  workflow_dispatch
-  # push:
-  #   branches:
-  #     - test
+  # workflow_dispatch
+  push:
+    branches:
+      - test
 
 jobs:
   ci:
