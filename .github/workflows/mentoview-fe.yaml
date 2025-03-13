@@ -1,24 +1,31 @@
 name: App with Github Actions, mentoview
 on:
-  # workflow_dispatch
-  push:
-    branches:
-      - test
+  workflow_dispatch
+  # push:
+  #   branches:
+  #     - test
+
 jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '20'
         cache: 'npm'
-        
+
+    - name: Create .env file
+      run: |
+        echo "${{ secrets.ENV_VARS }}" > .env
+        cat .env
+
     - name: Install Dependencies
       run: npm install
-      
+
     - name: Build React App
       run: CI=false npm run build -- --skip-build
 
@@ -54,18 +61,18 @@ jobs:
     needs: ci
 
     steps:
-    - name: Update application image version for ArgoCD
+    - name: Checkout ArgoCD Repository
       uses: actions/checkout@v4
       with:
         repository: ${{ secrets.G_USER_NAME }}/${{ secrets.G_REPOSITORY }}
         ref: main
         token: ${{ secrets.G_TOKEN }}
 
-    - name: Set up Image
+    - name: Update Image in ArgoCD Manifest
       run: |
         sed -i "s%image: ${{ secrets.AWS_ECR_ID }}.dkr.ecr.${{ secrets.AWS_ECR_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:fe-[a-zA-Z0-9]*%image: ${{ secrets.AWS_ECR_ID }}.dkr.ecr.${{ secrets.AWS_ECR_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:fe-${{ github.sha }}%" ./FE/mv-fe-manifest.yaml
 
-    - name: Commit and push changes
+    - name: Commit and Push Changes
       run: |
         git config --local user.email "${{ secrets.G_USER_EMAIL }}"
         git config --local user.name "${{ secrets.G_USER_NAME }}"
