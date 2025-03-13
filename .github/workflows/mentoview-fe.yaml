@@ -3,7 +3,7 @@
 #   # workflow_dispatch
 #   push:
 #     branches:
-#       - test
+#       - dev
 # jobs:
 #   ci:
 #     runs-on: ubuntu-latest
