@@ -2,9 +2,10 @@ import { useEffect } from "react";
 import styled from "styled-components";
 
 const KakaoChatBox = styled.div`
+    z-index: 995;
     position: fixed;
     right: 50px;
-    bottom: 0px;
+    bottom: 10px;
     width: fit-content;
     height: fit-content;
 `;

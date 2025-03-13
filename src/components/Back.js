@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const BackBtn = styled(FaChevronLeft)`
+    z-index: 995;
     position: fixed;
-    bottom: 60px;
+    bottom: 70px;
     right: 50px;
     background-color: transparent;
-    border: 2px solid var(--main-color);
+    border: 3.5px solid var(--main-color);
     font-size: 50px;
     color: var(--main-color);
     border-radius: 100%;
