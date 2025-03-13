@@ -1,31 +1,42 @@
 import { useMutation } from "@tanstack/react-query";
 
 const issueBillingKey = async () => {
-  if (!window.PortOne) {
-    throw new Error("결제 모듈이 로드되지 않았습니다.");
-  }
+    if (!window.PortOne) {
+        throw new Error("결제 모듈이 로드되지 않았습니다.");
+    }
 
-  const issueResponse = await window.PortOne.requestIssueBillingKey({
-    storeId: "store-81df2168-b212-4d11-a72d-c6b75e28ae3f",
-    channelKey: "channel-key-b7a18697-825c-4a49-b227-78b4ca252ad5",
-    billingKeyMethod: "EASY_PAY",
-    issueName: "유료 이용권 빌링키",
-    customer: { customerId: "1" },
-    noticeUrls: ["https://mentoview.site/api/webhook/billingkey"]
-  });
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    const token = sessionStorage.getItem("token");
+    const userId = user?.userId;
 
-  if (issueResponse.code !== undefined) {
-    throw new Error(issueResponse.message);
-  }
+    if (!userId) {
+        throw new Error("사용자 ID를 찾을 수 없습니다.");
+    }
 
-  return issueResponse;
+    const issueResponse = await window.PortOne.requestIssueBillingKey({
+        storeId: "store-81df2168-b212-4d11-a72d-c6b75e28ae3f",
+        channelKey: "channel-key-b7a18697-825c-4a49-b227-78b4ca252ad5",
+        billingKeyMethod: "EASY_PAY",
+        issueName: "유료 이용권 빌링키",
+        customer: { customerId: userId.toString() },
+        noticeUrls: ["https://mentoview.site/api/webhook/billingkey"],
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (issueResponse.code !== undefined) {
+        throw new Error(issueResponse.message);
+    }
+
+    return issueResponse;
 };
 
 const useBillingKey = (onSuccess) => {
     return useMutation({
-      mutationFn: issueBillingKey,
-      onSuccess,
+        mutationFn: issueBillingKey,
+        onSuccess,
     });
-  };
+};
 
 export default useBillingKey;

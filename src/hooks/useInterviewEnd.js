@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
 const uploadInterviewFiles = async (audioFiles) => {
+    const token = sessionStorage.getItem("token");
     const formData = new FormData();
 
     audioFiles.forEach((file) => {
@@ -11,7 +12,10 @@ const uploadInterviewFiles = async (audioFiles) => {
 
     try {
         const response = await axios.post("https://mentoview.site/api/interview/end", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+            },
         });
         return response.data;
     } catch (error) {

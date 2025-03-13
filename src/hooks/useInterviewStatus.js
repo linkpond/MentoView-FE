@@ -3,7 +3,14 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 const fetchInterviewStatus = async (interviewId) => {
-    const response = await axios.get(`https://mentoview.site/api/interview/${interviewId}/status`);
+    const token = sessionStorage.getItem("token");
+
+    const response = await axios.get(`https://mentoview.site/api/interview/${interviewId}/status`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
     return response.data;
 };
 

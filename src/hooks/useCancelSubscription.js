@@ -2,7 +2,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const cancelSubscriptionAPI = async (subId) => {
-    const response = await axios.delete(`https://mentoview.site/api/subscription/${subId}`);
+    const token = sessionStorage.getItem("token");
+
+    const response = await axios.delete(`https://mentoview.site/api/subscription/${subId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
     return response.data;
 };
 

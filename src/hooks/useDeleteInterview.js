@@ -2,7 +2,13 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
 const deleteInterview = async (interviewId) => {
-    await axios.delete(`https://mentoview.site/api/interview/${interviewId}`);
+    const token = sessionStorage.getItem("token");
+
+    await axios.delete(`https://mentoview.site/api/interview/${interviewId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 };
 
 const useDeleteInterview = () => {

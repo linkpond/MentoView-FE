@@ -1,16 +1,19 @@
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const uploadResume = async (formData) => {
+    const token = sessionStorage.getItem("token");
+
     try {
-        const response = await axios.post('https://mentoview.site/api/resume', formData, {
+        const response = await axios.post("https://mentoview.site/api/resume", formData, {
             headers: {
-                'Content-Type': 'multipart/form-data',
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
             },
         });
         return response.data;
     } catch (error) {
-        throw new Error('파일 업로드 실패');
+        throw new Error("파일 업로드 실패");
     }
 };
 
