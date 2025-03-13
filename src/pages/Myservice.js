@@ -274,14 +274,6 @@ const MyService = () => {
     const fileInputRef = useRef(null);
     const filteredResumeList = resumeList?.filter(item => item.deleteStatus !== true);
 
-    if (isLoading) {
-        return (
-            <MyServiceBox>
-                <Spinner />
-            </MyServiceBox>
-        );
-    }
-
     const toggleAccordion = (index) => {
         setOpenIndex(openIndex === index ? null : index);
     };
