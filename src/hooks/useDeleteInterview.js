@@ -1,8 +1,17 @@
-import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const deleteInterview = async (interviewId) => {
-    await axios.delete(`http://localhost:8080/api/interview/${interviewId}`);
+    const token = sessionStorage.getItem("token")?.trim();
+    if (!token) {
+        throw new Error("인증 토큰이 없습니다.");
+    }
+
+    await axios.delete(`https://mentoview.site/api/interview/${interviewId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 };
 
 const useDeleteInterview = () => {

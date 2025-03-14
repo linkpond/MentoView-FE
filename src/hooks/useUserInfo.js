@@ -7,7 +7,7 @@ const fetchUserInfo = async () => {
     const token = sessionStorage.getItem("token")?.trim();
     if (!token) throw new Error("No token");
 
-    const response = await axios.get("http://localhost:8080/api/auth/me", {
+    const response = await axios.get("https://mentoview.site/api/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
     });
 

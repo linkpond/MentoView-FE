@@ -161,9 +161,7 @@ const MVLogin = () => {
         const submitData = new FormData();
         submitData.append("password", formData.password);
         submitData.append("passwordCheck", formData.passwordCheck);
-
-        console.log("전송할 FormData:", Object.fromEntries(submitData));
-
+        
         submitPassword(submitData, {
             onSuccess: () => {
                 fetchUserInfo();

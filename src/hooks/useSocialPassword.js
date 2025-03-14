@@ -3,9 +3,9 @@ import axios from "axios";
 
 const socialPasswordRequest = async (passwordData) => {
     const token = sessionStorage.getItem("token")?.trim();
-    if (!token) throw new Error("No token");
+    if (!token) throw new Error("인증 토큰이 없습니다.");
 
-    const response = await axios.post("http://localhost:8080/api/social/password", passwordData, {
+    const response = await axios.post("https://mentoview.site/api/social/password", passwordData, {
         headers: { Authorization: `Bearer ${token}` },
     });
 

@@ -2,7 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 const fetchResumes = async () => {
-    const { data } = await axios.get('http://localhost:8080/api/resume');
+    const token = sessionStorage.getItem("token")?.trim();
+    if (!token) {
+        throw new Error("인증 토큰이 없습니다.");
+    }
+
+    const { data } = await axios.get('https://mentoview.site/api/resume', {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
     return data;
 };
 
