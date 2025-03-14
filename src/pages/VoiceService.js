@@ -7,7 +7,7 @@ import useInterviewQuestion from "../hooks/useInterviewQuestion";
 import useInterviewEnd from "../hooks/useInterviewEnd";
 import { setInterviewId } from "../redux/interviewSlice";
 import { useDispatch } from "react-redux";
-import useInterviewStatus from "../hooks/useInterviewStatus";
+import useSubscriptionStatus from "../hooks/useSubscriptionStatus";
 import { useNavigate } from "react-router-dom";
 // MainContainer
 const VoiceServiceBox = styled.div`
@@ -402,10 +402,17 @@ const VoiceService = () => {
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
     const navigate = useNavigate();
+    const { data: subscriptionData } = useSubscriptionStatus();
     const { data: resumeList } = useResumeList();
     const { data: interviewQuestions, isLoading, refetch } = useInterviewQuestion(resumeId && resumeId !== null ? resumeId : null);
     const { mutate: endInterview } = useInterviewEnd();
     const filteredResumeList = resumeList?.filter(item => item.deleteStatus !== true);
+    useEffect(() => {
+        if (!subscriptionData || subscriptionData.length === 0) {
+            alert("구독 중인 이용권이 존재하지 않습니다.");
+            navigate("/mypage");
+        }
+    }, [subscriptionData, navigate]);
     useEffect(() => {
         if (resumeId) {
             refetch();
@@ -418,6 +425,7 @@ const VoiceService = () => {
             navigate("/myservice");
         }
     }, [resumeList, filteredResumeList, navigate]);
+
     const startRecording = async (questionId) => {
         if (recording) return;
 
