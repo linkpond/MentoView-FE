@@ -112,7 +112,7 @@ const Login = () => {
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = "https://mentoview.site/api/oauth2/authorization/google";
+        window.location.href = "http://mentoview.site/api/oauth2/authorization/google";
     };
 
     return (
