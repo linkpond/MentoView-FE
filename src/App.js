@@ -11,8 +11,8 @@ import MyService from "./pages/Myservice.js";
 import Detail from "./pages/Detail";
 import MyPage from "./pages/MyPage.js"
 import VoiceService from "./pages/VoiceService.js";
-import GoogleLogin from "./components/GoogleLogin.js";
-import FormLogin from "./components/FormLogin.js";
+import MVLogin from "./components/MVLogin.js";
+
 
 function App() {
   
@@ -31,9 +31,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/mypage" element={<MyPage />} />
+          <Route path="/mv-login" element={<MVLogin />} />
         </Route>
-        <Route path="/google-login" element={<GoogleLogin />} />
-        <Route path="/form-login" element={<FormLogin />} />
       </Routes>
     </Router>
   );
