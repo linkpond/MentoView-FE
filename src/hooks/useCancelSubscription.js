@@ -1,18 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import apiClient from "../api/apiClient";
 
 const cancelSubscriptionAPI = async (subId) => {
-    const token = sessionStorage.getItem("token")?.trim();
-    if (!token) {
-        throw new Error("인증 토큰이 없습니다.");
-    }
-
-    const response = await axios.delete(`https://mentoview.site/api/subscription/${subId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
+    const response = await apiClient.delete(`/api/subscription/${subId}`);
     return response.data;
 };
 

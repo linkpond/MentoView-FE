@@ -6,13 +6,8 @@ const issueBillingKey = async () => {
   }
 
   const user = JSON.parse(sessionStorage.getItem("user"));
-  const token = sessionStorage.getItem("token")?.trim();
-
   if (!user || !user.userId) {
     throw new Error("사용자 정보가 없습니다.");
-  }
-  if (!token) {
-    throw new Error("인증 토큰이 없습니다.");
   }
 
   const issueResponse = await window.PortOne.requestIssueBillingKey({
@@ -21,11 +16,8 @@ const issueBillingKey = async () => {
     billingKeyMethod: "EASY_PAY",
     issueName: "유료 이용권 빌링키",
     customer: { customerId: String(user.userId) },
-    noticeUrls: ["https://mentoview.site/api/webhook/billingkey"],
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+    noticeUrls: [`${process.env.REACT_APP_API_BASE_URL}/api/webhook/billingkey`]
+});
 
   if (issueResponse.code !== undefined) {
     throw new Error(issueResponse.message);

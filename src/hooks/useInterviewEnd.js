@@ -1,12 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import apiClient from "../api/apiClient";
 
 const uploadInterviewFiles = async (audioFiles) => {
-    const token = sessionStorage.getItem("token")?.trim();
-    if (!token) {
-        throw new Error("인증 토큰이 없습니다.");
-    }
-
     const formData = new FormData();
     audioFiles.forEach((file) => {
         if (!file.questionId) return;
@@ -14,9 +9,9 @@ const uploadInterviewFiles = async (audioFiles) => {
     });
 
     try {
-        const response = await axios.post("https://mentoview.site/api/interview/end", formData, {
+        const response = await apiClient.post("/api/interview/end", formData, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                ...apiClient.defaults.headers.common,
                 "Content-Type": "multipart/form-data",
             },
         });

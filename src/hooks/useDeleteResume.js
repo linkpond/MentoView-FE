@@ -1,17 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import apiClient from "../api/apiClient";
 
 const deleteResume = async (resumeId) => {
-    const token = sessionStorage.getItem("token")?.trim();
-    if (!token) {
-        throw new Error("인증 토큰이 없습니다.");
-    }
-
-    await axios.delete(`https://mentoview.site/api/resume/${resumeId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    await apiClient.delete(`/api/resume/${resumeId}`);
 };
 
 const useDeleteResume = () => {

@@ -1,20 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import apiClient from '../api/apiClient';
 
 const fetchInterviewQuestions = async (resumeId) => {
-    const token = sessionStorage.getItem("token")?.trim();
-    if (!token) {
-        throw new Error("인증 토큰이 없습니다.");
-    }
-
     try {
-        const response = await axios.post(
-            'https://mentoview.site/api/interview/start',
-            { resumeId },
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        );
+        const response = await apiClient.post('/api/interview/start', { resumeId });
         return response.data;
     } catch (error) {
         throw new Error('인터뷰 질문 가져오기 실패');

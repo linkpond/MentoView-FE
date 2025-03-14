@@ -112,9 +112,9 @@ const Login = () => {
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = "http://mentoview.site/api/oauth2/authorization/google";
+        window.location.href = `${process.env.REACT_APP_API_BASE_URL}/api/oauth2/authorization/google`;
     };
-
+    
     return (
         <LoginBox>
             <LoginForm>

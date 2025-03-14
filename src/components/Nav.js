@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { logout } from "../redux/authSlice"
+import useLogout from "../hooks/useLogout";
 const Navbox = styled.div`
     position: sticky;
     top: 0;
@@ -106,16 +107,9 @@ const DropdownItem = styled.div`
 
 const Nav = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const user = useSelector(state => state.auth.user);
-
-    const handleLogout = () => {
-        sessionStorage.removeItem("user");
-        sessionStorage.removeItem("token");
-        dispatch(logout());
-        navigate("/");
-    };
+    const logoutMutation = useLogout();
 
     return (
         <Navbox>
@@ -137,9 +131,9 @@ const Nav = () => {
             <AuthBox>
                 {user ? (
                     <>
-                        <span className="user">{user?.email.split('@')[0]} 님</span>
+                        <span className="user">{user?.name} 님</span>
                         <AuthButton onClick={() => { navigate("/mypage"); window.scrollTo(0, 0); }}>Mypage</AuthButton>
-                        <AuthButton onClick={handleLogout}>Logout</AuthButton>
+                        <AuthButton onClick={() => logoutMutation.mutate()}>Logout</AuthButton>
                     </>
                 ) : (
                     <>

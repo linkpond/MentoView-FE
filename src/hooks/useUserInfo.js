@@ -1,21 +1,15 @@
 import { useDispatch } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import apiClient from "../api/apiClient";
 import { setUser } from "../redux/authSlice";
 
 const fetchUserInfo = async () => {
-    const token = sessionStorage.getItem("token")?.trim();
-    if (!token) throw new Error("No token");
-
-    const response = await axios.get("https://mentoview.site/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await apiClient.get("/api/auth/me");
 
     const newAccessToken = response.headers["authorization"];
     if (newAccessToken) {
         sessionStorage.removeItem("token");
         sessionStorage.setItem("token", newAccessToken.replace("Bearer ", ""));
-
     }
 
     return response.data;

@@ -1,17 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import apiClient from '../api/apiClient';
 
 const uploadResume = async (formData) => {
-    const token = sessionStorage.getItem("token")?.trim();
-    if (!token) {
-        throw new Error("인증 토큰이 없습니다.");
-    }
-
     try {
-        const response = await axios.post('https://mentoview.site/api/resume', formData, {
+        const response = await apiClient.post('/api/resume', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                Authorization: `Bearer ${token}`,
             },
         });
         return response.data;

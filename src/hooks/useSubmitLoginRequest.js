@@ -1,8 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import publicApiClient from "../api/publicApiClient";
 
 const loginRequest = async (formData) => {
-    await axios.post("https://mentoview.site/api/login", formData);
+    await publicApiClient.post("/api/login", formData);
 };
 
 export const useSubmitLoginRequest = () => {

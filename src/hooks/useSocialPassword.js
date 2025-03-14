@@ -1,14 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import apiClient from "../api/apiClient";
 
 const socialPasswordRequest = async (passwordData) => {
-    const token = sessionStorage.getItem("token")?.trim();
-    if (!token) throw new Error("인증 토큰이 없습니다.");
-
-    const response = await axios.post("https://mentoview.site/api/social/password", passwordData, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-
+    const response = await apiClient.post("/api/social/password", passwordData);
     return response.data;
 };
 

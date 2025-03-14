@@ -1,19 +1,9 @@
 import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import apiClient from '../api/apiClient';
 
 const fetchInterviewStatus = async (interviewId) => {
-    const token = sessionStorage.getItem("token")?.trim();
-    if (!token) {
-        throw new Error("인증 토큰이 없습니다.");
-    }
-
-    const response = await axios.get(
-        `https://mentoview.site/api/interview/${interviewId}/status`,
-        {
-            headers: { Authorization: `Bearer ${token}` },
-        }
-    );
+    const response = await apiClient.get(`/api/interview/${interviewId}/status`);
     return response.data;
 };
 
