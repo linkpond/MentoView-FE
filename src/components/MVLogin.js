@@ -126,11 +126,11 @@ const MVLogin = () => {
     }, [ndg, fetchUserInfo]);
 
     useEffect(() => {
-        if (userInfo && ndg === "tu") {
+        if (userInfo) {
             dispatch(setUser(userInfo));
             navigate("/");
         }
-    }, [userInfo, navigate, dispatch, ndg])
+    }, [userInfo, navigate, dispatch]);
 
     const handleChange = (e) => {
         setFormData((prev) => ({
@@ -171,7 +171,7 @@ const MVLogin = () => {
         });
     };
 
-    if (ndg === "fa") {
+    if (ndg === "tu") {
         return (
             <PasswordBox>
                 <Spinner />
