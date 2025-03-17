@@ -100,21 +100,18 @@ const MVLogin = () => {
     const dispatch = useDispatch();
     const { data: userInfo, refetch: fetchUserInfo } = useUserInfo();
     const { mutate: submitPassword } = useSocialPassword();
-    const [formData, setFormData] = useState({
-        password: "",
-        passwordCheck: "",
-    });
+    const [formData, setFormData] = useState({ password: "", passwordCheck: "" });
     const [ndg, setNdg] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
+    const [passwordSet, setPasswordSet] = useState(false);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
         const ndgValue = params.get("ndg");
-    
+
         if (token) {
             sessionStorage.setItem("token", token.trim());
-            sessionStorage.setItem("ndg", ndgValue);
             setNdg(ndgValue);
         }
     }, []);
@@ -126,11 +123,11 @@ const MVLogin = () => {
     }, [ndg, fetchUserInfo]);
 
     useEffect(() => {
-        if (userInfo) {
+        if (userInfo && ndg === "tu") {
             dispatch(setUser(userInfo));
             navigate("/");
         }
-    }, [userInfo, navigate, dispatch]);
+    }, [userInfo, navigate, dispatch, ndg]);
 
     const handleChange = (e) => {
         setFormData((prev) => ({
@@ -161,15 +158,21 @@ const MVLogin = () => {
         const submitData = new FormData();
         submitData.append("password", formData.password);
         submitData.append("passwordCheck", formData.passwordCheck);
-        
+
         submitPassword(submitData, {
             onSuccess: () => {
                 if (ndg === "fa") {
-                    fetchUserInfo();
+                    setPasswordSet(true);
                 }
             },
         });
     };
+
+    useEffect(() => {
+        if (ndg === "fa" && passwordSet) {
+            fetchUserInfo();
+        }
+    }, [ndg, passwordSet, fetchUserInfo]);
 
     if (ndg === "tu") {
         return (
