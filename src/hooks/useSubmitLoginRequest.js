@@ -9,10 +9,14 @@ const loginRequest = async (formData) => {
 export const useSubmitLoginRequest = () => {
     return useMutation({
         mutationFn: loginRequest,
-        onSuccess: (data) => {
+        onSuccess: (data, variables, context) => {
             console.log("로그인 성공, 응답 데이터:", data);
-            if (data.redirectUrl) {
-                window.location.href = data.redirectUrl;
+
+            const redirectUrl = context?.response?.headers?.get("location");
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            } else {
+                console.log("🚨 redirectUrl이 없음! 서버 응답 확인 필요");
             }
         },
         onError: (err) => {
