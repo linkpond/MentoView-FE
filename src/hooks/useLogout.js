@@ -17,6 +17,7 @@ const useLogout = () => {
         onSuccess: () => {
             sessionStorage.removeItem("user");
             sessionStorage.removeItem("token");
+            sessionStorage.removeItem("isAuthenticated");
             dispatch(logout());
             navigate("/");
         },

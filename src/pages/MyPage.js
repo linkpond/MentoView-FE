@@ -156,6 +156,21 @@ const PasswordBtn = styled.div`
     }
 `;
 
+const Spinner = styled.div`
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid var(--main-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 40px;
+    padding: 30px;
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+
 const MyPage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
         return sessionStorage.getItem("isAuthenticated") === "true";
@@ -203,7 +218,6 @@ const MyPage = () => {
     const handleLogout = () => {
         logoutMutation.mutate();
         setIsAuthenticated(false);
-        sessionStorage.removeItem("isAuthenticated");
     };
 
     const tabContents = {
@@ -212,6 +226,14 @@ const MyPage = () => {
         "비밀번호 변경": () => <ChangePassword />,
         "회원 탈퇴": () => <DeleteAccount />,
     };
+    
+    if (mutation.isLoading) {
+        return (
+            <MyPageBox>
+                <Spinner />
+            </MyPageBox>
+        );
+    }
 
     return (
         <MyPageBox>

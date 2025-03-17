@@ -89,6 +89,20 @@ const LoginBtn = styled.div`
         color: #fff;
     }
 `;
+const Spinner = styled.div`
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid var(--main-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 40px;
+    padding: 30px;
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
 
 const Login = () => {
     const navigate = useNavigate();
@@ -110,6 +124,14 @@ const Login = () => {
     const handleGoogleLogin = () => {
         window.location.href = `${process.env.REACT_APP_API_BASE_URL}/api/oauth2/authorization/google`.replace(/([^:]\/)\/+/g, "$1");
     };
+
+    if (isLoading) {
+        return (
+            <LoginBox>
+                <Spinner />
+            </LoginBox>
+        );
+    }
 
     return (
         <LoginBox>
