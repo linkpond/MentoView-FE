@@ -9,7 +9,7 @@ const useDeleteAccount = () => {
                 throw new Error("사용자 정보가 없습니다.");
             }
 
-            const response = await apiClient.delete(`/api/users/${user.userId}`);
+            const response = await apiClient.delete(`/api/mypage/delete/${user.userId}`);
             return response.data;
         }
     });
