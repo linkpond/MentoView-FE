@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import publicApiClient from "../api/publicApiClient";
 
 const loginRequest = async (formData) => {
-    const response = await publicApiClient.post("/api/login", formData, { 
+    const response = await publicApiClient.post("/api/login", formData, {
     });
     console.log("🔍 로그인 응답:", response);
     return response;
@@ -11,14 +11,12 @@ const loginRequest = async (formData) => {
 export const useSubmitLoginRequest = () => {
     return useMutation({
         mutationFn: loginRequest,
-        onSuccess: (data, variables, context) => {
-            console.log("로그인 성공, 응답 데이터:", data);
-
-            const redirectUrl = context?.response?.headers?.get("location");
+        onSuccess: (response) => {
+            const redirectUrl = response.request?.responseURL;
             if (redirectUrl) {
                 window.location.href = redirectUrl;
             } else {
-                console.log("🚨 redirectUrl이 없음! 서버 응답 확인 필요");
+                console.log("🚨 redirectUrl이 없음! 서버 응답 확인 필요", response);
             }
         },
         onError: (err) => {
