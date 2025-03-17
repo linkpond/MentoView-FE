@@ -93,14 +93,6 @@ const LoginBtn = styled.div`
 const Login = () => {
     const navigate = useNavigate();
     const { mutate: login, isLoading, error } = useSubmitLoginRequest();
-
-    useEffect(() => {
-        const token = sessionStorage.getItem("token");
-        if (token) {
-            navigate("/");
-        }
-    }, [navigate]);
-
     const [formData, setFormData] = useState({ email: "", password: "" });
 
     const handleChange = (e) => {
@@ -110,7 +102,11 @@ const Login = () => {
     const handleFormLogin = () => {
         login(formData);
     };
-
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleFormLogin();
+        }
+    };
     const handleGoogleLogin = () => {
         window.location.href = `${process.env.REACT_APP_API_BASE_URL}/api/oauth2/authorization/google`.replace(/([^:]\/)\/+/g, "$1");
     };
@@ -120,7 +116,7 @@ const Login = () => {
             <LoginForm>
                 <img className="logo" src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" onClick={() => { navigate("/") }} />
                 <Input type="text" name="email" placeholder="EMAIL" onChange={handleChange} />
-                <Input type="password" name="password" placeholder="PW" onChange={handleChange} />
+                <Input type="password" name="password" placeholder="PW" onChange={handleChange} onKeyDown={handleKeyDown} />
                 <div className="error">{error && "아이디 혹은 비밀번호가 일치하지 않습니다."}</div>
                 <ButtonBox>
                     <LoginBtn onClick={handleFormLogin} disabled={isLoading}>LOGIN</LoginBtn>

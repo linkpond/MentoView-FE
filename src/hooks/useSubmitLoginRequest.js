@@ -10,6 +10,7 @@ export const useSubmitLoginRequest = () => {
     return useMutation({
         mutationFn: loginRequest,
         onSuccess: (data) => {
+            console.log("로그인 성공, 응답 데이터:", data);
             if (data.redirectUrl) {
                 window.location.href = data.redirectUrl;
             }
