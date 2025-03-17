@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useModifyPassword from "../hooks/useModifyPassword";
+import { useModifyPassword } from "../hooks/useModifyPassword";
 import styled from "styled-components";
 
 const TabContentItem = styled.div`
@@ -76,6 +76,7 @@ const ChangePassword = () => {
     });
     const [errorMessage, setErrorMessage] = useState("");
 
+    console.log("🛠 useModifyPassword 반환값:", modifyPasswordMutation);
     const handleChange = (e) => {
         setPasswords((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
@@ -103,21 +104,20 @@ const ChangePassword = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-    
-        if (errorMessage) return;
-    
-        console.log("🚀 전송 데이터:", passwords);
-    
+
+        if (errorMessage) {
+            alert(errorMessage);
+            return;
+        }
+
         modifyPasswordMutation.mutate(passwords, {
-            onSuccess: () => {
-                console.log("✅ 비밀번호 변경 성공");
+            onSuccess: (data) => {
                 alert("비밀번호 변경 성공!");
                 setPasswords({ beforePassword: "", afterPassword: "", afterPasswordCheck: "" });
             },
             onError: (error) => {
-                console.error("❌ 요청 실패:", error);
-                console.error("❌ 응답 데이터:", error.response);
-                alert(error.response?.data || "비밀번호 변경 실패");
+                const errorMessage = error.response?.data || "비밀번호 변경 실패";
+                alert(errorMessage);
             },
         });
     };
