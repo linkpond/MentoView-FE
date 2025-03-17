@@ -164,12 +164,14 @@ const MVLogin = () => {
         
         submitPassword(submitData, {
             onSuccess: () => {
-                fetchUserInfo();
+                if (ndg === "fa") {
+                    fetchUserInfo();
+                }
             },
         });
     };
 
-    if (ndg === "tu") {
+    if (ndg === "fa") {
         return (
             <PasswordBox>
                 <Spinner />
