@@ -161,18 +161,10 @@ const MVLogin = () => {
 
         submitPassword(submitData, {
             onSuccess: () => {
-                if (ndg === "fa") {
-                    setPasswordSet(true);
-                }
+                fetchUserInfo();
             },
         });
     };
-
-    useEffect(() => {
-        if (ndg === "fa" && passwordSet) {
-            fetchUserInfo();
-        }
-    }, [ndg, passwordSet, fetchUserInfo]);
 
     if (ndg === "tu") {
         return (
