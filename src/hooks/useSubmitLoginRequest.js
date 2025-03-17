@@ -2,8 +2,10 @@ import { useMutation } from "@tanstack/react-query";
 import publicApiClient from "../api/publicApiClient";
 
 const loginRequest = async (formData) => {
-    const response = await publicApiClient.post("/api/login", formData);
-    return response.data;
+    const response = await publicApiClient.post("/api/login", formData, { 
+    });
+    console.log("🔍 로그인 응답:", response);
+    return response;
 };
 
 export const useSubmitLoginRequest = () => {
