@@ -23,7 +23,9 @@ const issueBillingKey = async () => {
       billingKeyMethod: "EASY_PAY",
       issueName: "유료 이용권 빌링키",
       customer: { customerId: String(user.userId) },
-      noticeUrls: [`${process.env.REACT_APP_API_BASE_URL}/api/webhook/billingkey`],
+      noticeUrls: [
+        `${process.env.REACT_APP_API_BASE_URL}/api/webhook/billingkey`.replace(/([^:]\/)\/+/g, "$1")
+      ],
     });
 
     console.log("✅ 빌링키 발급 응답:", issueResponse);

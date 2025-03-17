@@ -7,6 +7,8 @@ import ChangePassword from "../components/ChangePassword";
 import DeleteAccount from "../components/DeleteAccount";
 import useMyPageAuth from "../hooks/useMypageAuth";
 import useLogout from "../hooks/useLogout";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 // Mypage
 const MyPageBox = styled.div`
@@ -180,6 +182,15 @@ const MyPage = () => {
     const [activeTab, setActiveTab] = useState("구독 관리");
     const mutation = useMyPageAuth();
     const logoutMutation = useLogout();
+    const navigate = useNavigate();
+    const user = useSelector(state => state.auth.user);
+
+    useEffect(() => {
+        if (!user) {
+            alert("로그인이 필요한 서비스입니다.");
+            navigate("/login");
+        }
+    }, [user, navigate]);
 
     const handleChange = (e) => {
         setPassword(e.target.value);
