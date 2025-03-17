@@ -280,7 +280,7 @@ const Subscription = () => {
                         },
                     });
 
-                }, 1000);
+                }, 2000);
             },
             onError: (error) => {
                 alert(`Billing Key 요청 실패: ${error.message}`);
