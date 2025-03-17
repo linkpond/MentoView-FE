@@ -126,11 +126,11 @@ const MVLogin = () => {
     }, [ndg, fetchUserInfo]);
 
     useEffect(() => {
-        if (userInfo) {
+        if (userInfo && ndg === "tu") {
             dispatch(setUser(userInfo));
             navigate("/");
         }
-    }, [userInfo, navigate, dispatch]);
+    }, [userInfo, navigate, dispatch, ndg])
 
     const handleChange = (e) => {
         setFormData((prev) => ({
