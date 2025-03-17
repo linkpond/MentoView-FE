@@ -98,12 +98,13 @@ const Spinner = styled.div`
 const MVLogin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { data: userInfo, refetch: fetchUserInfo, isFetching } = useUserInfo();
+    const { data: userInfo, refetch: fetchUserInfo, isFetching, isSuccess } = useUserInfo();
     const { mutate: submitPassword } = useSocialPassword();
     const [formData, setFormData] = useState({ password: "", passwordCheck: "" });
     const [ndg, setNdg] = useState(null);
     const [errorMessage, setErrorMessage] = useState("");
     const [isPasswordSet, setIsPasswordSet] = useState(false);
+    const [isUserFetched, setIsUserFetched] = useState(false);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -119,15 +120,16 @@ const MVLogin = () => {
     useEffect(() => {
         if ((ndg === "tu") || (ndg === "fa" && isPasswordSet)) { 
             fetchUserInfo();
+            setIsUserFetched(true);
         }
     }, [ndg, isPasswordSet, fetchUserInfo]);
 
     useEffect(() => {
-        if (userInfo) { 
+        if (userInfo && isUserFetched) {
             dispatch(setUser(userInfo));
             navigate("/");
         }
-    }, [userInfo, navigate, dispatch]);
+    }, [userInfo, isUserFetched, navigate, dispatch]);
 
     const handleChange = (e) => {
         setFormData((prev) => ({
