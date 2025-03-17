@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { FaAngleRight } from "react-icons/fa6";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaFileUpload } from "react-icons/fa";
 import useUploadResume from "../hooks/useUploadResume";
 import useResumeList from "../hooks/useResumeList";
 import useDeleteResume from "../hooks/useDeleteResume";
+import { useSelector } from "react-redux";
 
 const MyServiceBox = styled.div`
     width: 100%;
@@ -273,6 +274,14 @@ const MyService = () => {
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
     const filteredResumeList = resumeList?.filter(item => item.deleteStatus !== true);
+    const user = useSelector(state => state.auth.user);
+
+    useEffect(() => {
+        if (!user) {
+            alert("로그인이 필요한 서비스입니다.");
+            navigate("/login");
+        }
+    }, [user, navigate]);
 
     const toggleAccordion = (index) => {
         setOpenIndex(openIndex === index ? null : index);

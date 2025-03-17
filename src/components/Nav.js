@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { logout } from "../redux/authSlice"
 import useLogout from "../hooks/useLogout";
 const Navbox = styled.div`
     position: sticky;

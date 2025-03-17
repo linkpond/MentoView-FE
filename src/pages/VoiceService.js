@@ -6,7 +6,7 @@ import useResumeList from "../hooks/useResumeList";
 import useInterviewQuestion from "../hooks/useInterviewQuestion";
 import useInterviewEnd from "../hooks/useInterviewEnd";
 import { setInterviewId } from "../redux/interviewSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useSubscriptionStatus from "../hooks/useSubscriptionStatus";
 import { useNavigate } from "react-router-dom";
 // MainContainer
@@ -407,24 +407,33 @@ const VoiceService = () => {
     const { data: interviewQuestions, isLoading, refetch } = useInterviewQuestion(resumeId && resumeId !== null ? resumeId : null);
     const { mutate: endInterview } = useInterviewEnd();
     const filteredResumeList = resumeList?.filter(item => item.deleteStatus !== true);
+    const user = useSelector(state => state.auth.user);
     useEffect(() => {
-        if (!subscriptionData || subscriptionData.length === 0) {
-            alert("구독 중인 이용권이 존재하지 않습니다.");
+        if (!user) {
+            alert("로그인이 필요한 서비스입니다.");
+            navigate("/login");
+        }
+    }, [user, navigate]);
+    
+    useEffect(() => {
+        if (user && (!subscriptionData || subscriptionData.length === 0)) {
+            alert("이용 가능한 구독권이 존재하지 않습니다.");
             navigate("/mypage");
         }
-    }, [subscriptionData, navigate]);
+    }, [user, subscriptionData, navigate]);
+    
+    useEffect(() => {
+        if (user && subscriptionData?.length > 0 && (!filteredResumeList || filteredResumeList.length === 0)) {
+            alert("이력서를 등록 후 이용해주세요.");
+            navigate("/myservice");
+        }
+    }, [user, subscriptionData, filteredResumeList, navigate]);
+
     useEffect(() => {
         if (resumeId) {
             refetch();
         }
     }, [resumeId]);
-
-    useEffect(() => {
-        if (!resumeList || filteredResumeList.length === 0) {
-            alert("사용 가능한 이력서가 없습니다. 등록 후 이용해주세요");
-            navigate("/myservice");
-        }
-    }, [resumeList, filteredResumeList, navigate]);
 
     const startRecording = async (questionId) => {
         if (recording) return;

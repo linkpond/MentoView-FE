@@ -69,14 +69,13 @@ const ChangeButton = styled.button`
 
 const ChangePassword = () => {
     const modifyPasswordMutation = useModifyPassword();
+    const [errorMessage, setErrorMessage] = useState("");
     const [passwords, setPasswords] = useState({
         beforePassword: "",
         afterPassword: "",
         afterPasswordCheck: "",
     });
-    const [errorMessage, setErrorMessage] = useState("");
-
-    console.log("🛠 useModifyPassword 반환값:", modifyPasswordMutation);
+    
     const handleChange = (e) => {
         setPasswords((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
