@@ -267,22 +267,28 @@ const Subscription = () => {
     const [open, setOpen] = useState();
     const [inputValue, setInputValue] = useState("");
     const handlePayment = () => {
+        console.log("🛠️ 빌링키 발급 요청 시작...");
+
         issueBillingKey(undefined, {
             onSuccess: async (data) => {
+                console.log("✅ 빌링키 발급 성공:", data);
                 setTimeout(() => {
+                    console.log("🚀 구독 요청 시작...");
                     requestSubscription(undefined, {
                         onSuccess: (subscriptionData) => {
+                            console.log("🎉 구독 요청 성공:", subscriptionData);
                             alert(JSON.stringify(subscriptionData));
                             refetch();
                         },
                         onError: (error) => {
+                            console.error("❌ 구독 요청 실패:", error);
                             alert(`구독 요청 실패: ${error.message}`);
                         },
                     });
-
                 }, 2000);
             },
             onError: (error) => {
+                console.error("❌ 빌링키 요청 실패:", error);
                 alert(`Billing Key 요청 실패: ${error.message}`);
             },
         });
