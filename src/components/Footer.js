@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const FooterBox = styled.div`
     width: 100%;
-    height: fit-content;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -10,7 +10,6 @@ const FooterBox = styled.div`
     color: #fff;
     font-size: 12px;
     font-weight: bold;
-    padding: 2px 0px 2px 0px;
 `
 
 const Footer = () => {

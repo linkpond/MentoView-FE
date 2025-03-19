@@ -20,6 +20,9 @@ const BackBtn = styled(FaChevronLeft)`
         border: 2px solid transparent;
         color: #555;
     }
+    @media (max-width: 600px) {
+        display: none;
+    }
 `
 
 const Back = () => {

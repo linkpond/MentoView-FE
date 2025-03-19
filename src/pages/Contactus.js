@@ -6,18 +6,33 @@ import { IoMailSharp } from "react-icons/io5";
 
 const ContactusBox = styled.div`
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 65px);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0px 200px;
+    @media (max-width: 1500px) {
+        padding: 0px 50px;
+    }
+    @media (max-width: 1200px) {
+        padding: 50px 20px 00px 20px;
+        align-items: start;
+    }
 `;
 
 const StyledMap = styled.div`
-    width: 700px;
-    height: 400px;
+    max-width: 700px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 7 / 4;
     border-radius: 8px;
     box-shadow: 0px 10px 10px 1px rgba(0, 0, 0, 0.2);
+    @media (max-width: 1200px) {
+        max-width: 80%;
+    }
+    @media (max-width: 750px) {
+        max-width: 100%;
+    }
 `;
 
 const KakaoMap = () => {
@@ -45,7 +60,7 @@ const KakaoMap = () => {
         loadKakaoMap();
     }, []);
 
-    if (!isLoaded) return <p>지도를 불러오는 중...</p>;
+    // if (!isLoaded) return <p>지도를 불러오는 중...</p>;
 
     return (
         <StyledMap>
@@ -59,7 +74,6 @@ const KakaoMap = () => {
 };
 
 const MapBox = styled.div`
-    margin: 50px 0;
     width: 100%;
     display: flex;
     align-items: center;
@@ -85,6 +99,20 @@ const MapBox = styled.div`
             color: var(--main-color) !important;
         }
     }
+    @media (max-width: 1200px) {
+        flex-direction: column-reverse;
+        .location-box {
+            width: 700px;
+            height: fit-content;
+        }
+    }
+    @media (max-width: 750px) {
+        flex-direction: column-reverse;
+        .location-box {
+            width: 100%;
+            height: fit-content;
+        }
+    }
 `;
 
 const Edge = styled.div`
@@ -108,9 +136,9 @@ const Contactus = () => {
                 <KakaoMap />
                 <div className="location-box">
                     <Edge>Address</Edge>
-                    <span className="lo-text"><FaLocationDot className="icon"/> Cloud-Engineering2</span>
+                    <span className="lo-text"><FaLocationDot className="icon"/>서울 종로구 종로3길17, 광화문D타워 D1동 16층, 17층</span>
                     <Edge>Email</Edge>
-                    <span className="lo-text"><IoMailSharp className="icon"/> abcdefg@gmail.com</span>
+                    <span className="lo-text"><IoMailSharp className="icon"/>contact@likelion.net</span>
                     <Edge>Tel</Edge>
                     <span className="lo-text"><FaPhoneFlip className="icon sz" /> 010-1234-5678</span>
                 </div>

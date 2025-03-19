@@ -1,20 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSubmitLoginRequest } from "../hooks/useSubmitLoginRequest.js";
 
 const LoginBox = styled.div`
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 65px);
     display: flex;
     align-items: center;
     justify-content: center;
     .logo {
-        width: 140px;
+        width: clamp(100px, 15vw, 140px);
+        cursor: pointer;
     }
     .signup {
-        margin: 5px 0;
-        font-size: 12px;
+        margin-top: 10px;
+        font-size: clamp(10px, 2vw, 12px);
         font-weight: bold;
         cursor: pointer;
         color: #aaa;
@@ -25,8 +26,7 @@ const LoginBox = styled.div`
 `;
 
 const LoginForm = styled.div`
-    width: fit-content;
-    height: fit-content;
+    width: min(90%, 400px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -45,35 +45,34 @@ const LoginForm = styled.div`
 `;
 
 const Input = styled.input`
-    width: 300px;
+    width: 100%;
     height: 40px;
     border: 2px solid #eee;
     border-radius: 4px;
     margin: 10px;
     padding-left: 10px;
     outline: none;
-    font-size: 13px;
+    font-size: clamp(12px, 2.5vw, 14px);
     transition: all 0.15s;
     &:focus {
         border: 2px solid var(--main-color);
     }
     &::placeholder {
-        font-size: 13px;
+        font-size: clamp(12px, 2.5vw, 14px);
     }
 `;
 
 const ButtonBox = styled.div`
-    padding: 10px;
     width: 100%;
-    height: fit-content;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
 `;
 
 const LoginBtn = styled.div`
-    width: 140px;
-    height: 34px;
+    flex: 1;
+    height: 40px;
     border-radius: 4px;
     border: 2px solid var(--main-color);
     display: flex;
@@ -83,6 +82,7 @@ const LoginBtn = styled.div`
     background-color: #fff;
     color: var(--main-color);
     cursor: pointer;
+    font-size: clamp(14px, 3vw, 16px);
     transition: all 0.2s;
     &:hover {
         background-color: var(--main-color);

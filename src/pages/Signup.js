@@ -7,14 +7,17 @@ import { FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
 
 const SignupBox = styled.div`
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 65px);
     display: flex;
     align-items: center;
     justify-content: center;
+    @media (max-width: 650px) {
+        padding: 10px;
+    }
 `;
 
 const SignupFormBox = styled.div`
-    width: fit-content;
+    width: 550px;
     height: fit-content;
     display: flex;
     flex-direction: column;
@@ -53,7 +56,7 @@ const SignupFormBox = styled.div`
     }
     .info-box {
         padding: 10px;
-        width: 470px;
+        width: 100%;
         height: 100px;
         overflow-y: auto;
         border: 2px solid #ddd;
@@ -77,6 +80,9 @@ const SignupFormBox = styled.div`
             margin-bottom: 5px;
         }
     }
+    @media (max-width: 650px) {
+        width: 400px;
+    }
 `;
 
 const InputBox = styled.div`
@@ -90,6 +96,11 @@ const InputBox = styled.div`
 
 const InputTitle = styled.span`
     margin-right: 40px;
+    @media (max-width: 650px) {
+        margin-right: 10px;
+        font-size: 12px;
+        font-weight: bold;
+    }
 `;
 
 const Input = styled.input`
@@ -106,6 +117,9 @@ const Input = styled.input`
     }
     &::placeholder {
         font-size: 13px;
+    }
+    @media (max-width: 650px) {
+        width: 230px;
     }
 `;
 
@@ -144,7 +158,7 @@ function Certification({ certified, setCertified }) {
     function onClickCertification() {
         const { IMP } = window;
         const iamportCode = process.env.REACT_APP_IAMPORT_CODE;
-        
+
         if (!iamportCode) {
             console.error("아임포트 코드가 설정되지 않았습니다.");
             return;
@@ -289,9 +303,9 @@ const Signup = () => {
                 <div className="error-msg">{errorMessage}</div>
                 <div className="check-box">
                     {
-                        agree 
-                        ? <FaCheckCircle className="check" onClick={() => { setAgree(!agree) }} />
-                        : <FaRegCheckCircle className="check none" onClick={() => { setAgree(!agree) }} />
+                        agree
+                            ? <FaCheckCircle className="check" onClick={() => { setAgree(!agree) }} />
+                            : <FaRegCheckCircle className="check none" onClick={() => { setAgree(!agree) }} />
                     }
                     <span className="check-title">개인정보 수집 및 이용 동의</span>
                 </div>

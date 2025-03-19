@@ -51,7 +51,7 @@ const ImageBox = styled.div`
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5); /* 투명한 검은색 */
+        background: rgba(0, 0, 0, 0.5);
         z-index: 1;
     }
     .down {
@@ -60,6 +60,9 @@ const ImageBox = styled.div`
         opacity: 0;
         animation: ${fadeIn} 1s ease-in-out 1.2s forwards, ${blink} 1.5s infinite 2.5s;
         z-index: 2;
+    }
+    @media (max-width: 600px) {
+        height: 70vh;
     }
 `;
 
@@ -70,6 +73,9 @@ const ImageTitle = styled.span`
     opacity: 0;
     animation: ${fadeIn} 1s ease-in-out forwards;
     z-index: 2;
+    @media (max-width: 600px) {
+        font-size: 20px;
+    }
 `;
 
 const ImageSubtitle = styled.span`
@@ -80,6 +86,10 @@ const ImageSubtitle = styled.span`
     opacity: 0;
     animation: ${fadeIn} 1s ease-in-out 0.5s forwards;
     z-index: 2;
+    @media (max-width: 600px) {
+        font-size: 18px;
+        margin: 50px 0px 100px 0px;
+    }
 `;
 
 const MidBox = styled.div`
@@ -90,6 +100,12 @@ const MidBox = styled.div`
     align-items: center;
     justify-content: center;
     padding: 50px 200px 0px 200px;
+    @media (max-width: 1400px) {
+        padding: 50px 50px 0px 50px;
+    }
+    @media (max-width: 600px) {
+        padding: 50px 0px 0px 0px;
+    }
 `
 const MidColorTitle = styled.span`
     font-size: 20px;
@@ -102,7 +118,7 @@ const MidTitle = styled.span`
     font-weight: bold;
 `
 const ResumeBox = styled.div`
-    margin: 50px 0px 50px 0px;
+    margin: 50px 0;
     width: 100%;
     height: fit-content;
     display: flex;
@@ -119,13 +135,27 @@ const ResumeBox = styled.div`
         flex-direction: column;
         align-items: start;
         justify-content: center;
+
         .title {
             font-size: 18px;
             font-weight: bold;
             margin-top: 10px;
         }
     }
-`
+
+    @media (max-width: 1150px) {
+        flex-direction: column-reverse;
+        align-items: center;
+        .resume {
+            margin-top: 20px;
+        }
+    }
+    @media (max-width: 600px) {
+        .resume, .rt-box {
+            width: 350px;
+        }
+    }
+`;
 const InterviewBox = styled.div`
     margin-bottom: 50px;
     width: 100%;
@@ -148,6 +178,17 @@ const InterviewBox = styled.div`
             font-size: 18px;
             font-weight: bold;
             margin-top: 10px;
+        }
+    }
+    @media (max-width: 1150px) {
+        flex-direction: column;
+        .interview {
+            margin-top: 20px;
+        }
+    }
+    @media (max-width: 600px) {
+        .interview, .it-box {
+            width: 350px;
         }
     }
 `
@@ -181,6 +222,19 @@ const BottomBox = styled.div`
             font-weight: bold;
         }
     }
+    @media (max-width: 1200px) {
+        flex-direction: column;
+        padding: 50px 0px 0px 0px;
+        justify-content: center;
+        .bt-box {
+            align-items: center;
+        }
+    }
+    @media (max-width: 600px) {
+        .bt-box > .bt-text {
+            font-size: 20px;
+        }
+    }
 `;
 
 const BottomBtn = styled.div`
@@ -198,6 +252,9 @@ const BottomBtn = styled.div`
     transition: 0.15s;
     &:hover {
         opacity: 0.8;
+    }
+    @media (max-width: 1200px) {
+        margin-top: 20px;
     }
 `
 

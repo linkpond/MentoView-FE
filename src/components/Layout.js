@@ -29,7 +29,6 @@ const Layout = () => {
   useTokenRefresh();
   return (
     <>
-
       <GlobalStyles />
       <LayoutContainer hasBackground={hasBackground}>
         <Nav />

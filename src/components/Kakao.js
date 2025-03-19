@@ -8,6 +8,9 @@ const KakaoChatBox = styled.div`
     bottom: 10px;
     width: fit-content;
     height: fit-content;
+    @media (max-width: 600px) {
+        right: 10px;
+    }
 `;
 
 const Kakao = () => {

@@ -285,7 +285,7 @@ const Subscription = () => {
                             alert(`구독 요청 실패: ${error.message}`);
                         },
                     });
-                }, 2000);
+                }, 3000);
             },
             onError: (error) => {
                 console.error("❌ 빌링키 요청 실패:", error);

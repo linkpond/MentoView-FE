@@ -3,12 +3,16 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import useLogout from "../hooks/useLogout";
+import { FiMenu, FiX } from "react-icons/fi";
+import { FaAngleRight } from "react-icons/fa6";
+import { FaUserCircle } from "react-icons/fa";
+
 const Navbox = styled.div`
     position: sticky;
     top: 0;
     z-index: 997;
     width: 100%;
-    height: fit-content;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -19,6 +23,14 @@ const Navbox = styled.div`
     }
     border-bottom: 1.5px solid #aaa;
     background-color: #fff;
+    @media (max-width: 1120px) {
+        justify-content: center;
+        padding: 0 20px;
+        .logo{
+            width: 120px;
+            margin-left: auto;
+        }
+    }
 `
 const MenuBox = styled.div`
     width: fit-content;
@@ -43,6 +55,9 @@ const MenuBox = styled.div`
             position: relative;
         }
     }
+    @media (max-width: 1120px) {
+        display: none;
+    }
 `
 const AuthBox = styled.div`
     width: fit-content;
@@ -52,6 +67,9 @@ const AuthBox = styled.div`
     justify-content: center;
     .user {
         font-weight: bold;
+    }
+    @media (max-width: 1120px) {
+        display: none;
     }
 `
 
@@ -103,12 +121,131 @@ const DropdownItem = styled.div`
         color: #fff;
     }
 `
+const SideBox = styled.div`
+    position: fixed;
+    top: 0;
+    right: ${({ isOpen }) => (isOpen ? "0" : "-100%")};
+    width: 250px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
+    transition: right 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+    .close {
+        cursor: pointer;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        font-size: 24px;
+        color: var(--main-color);
+    }
+    .side-auth-box {
+        padding: 0px 10px;
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        .icon-box {
+            width: fit-content;
+            height: fit-content;
+            display: flex;
+            align-items: center;
+            .user-icon {
+                font-size: 24px;
+                color: #aaa;
+                margin-right: 5px;
+            }
+            .user {
+                font-weight: bold;
+            }
+            margin-bottom: 10px;
+        }
+        .auth-btn-box {
+            width: 100%;
+            height: fit-content;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .auth-btn {
+                cursor: pointer;
+                width: 110px;
+                height: 33px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 4px;
+                background-color: var(--main-color);
+                color: #fff;
+                font-weight: bold;
+            }
+        }
+    }
+    .side-item {
+        cursor: pointer;
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0px 10px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 15px;
+    }
+    .service-item {
+        cursor: pointer;
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        padding-left: 30px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 10px;
+        display: none;
+        &.open {
+            display: block;
+        }
+    }
+    .side-logo {
+        margin: auto 0px 20px 0px;
+        width: 130px;
+    }
+`;
+const ToggleIcon = styled(FaAngleRight)`
+    color: var(--main-color);
+    font-size: 16px;
+    flex-grow: initial;
+    margin-left: auto;
+    cursor: pointer;
+    transition: transform 0.15s;
+    transform: ${({ isOpen }) => (isOpen ? "rotate(90deg)" : "rotate(0deg)")};
+`;
+const Hamburger = styled(FiMenu)`
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    margin-left: auto;
+    @media (max-width: 1120px) {
+        display: block;
+    }
+`;
 
 const Nav = () => {
     const navigate = useNavigate();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const user = useSelector(state => state.auth.user);
     const logoutMutation = useLogout();
+    const [sideOpen, setSideOpen] = useState(false);
+    const [serviceOpen, setServiceOpen] = useState(false);
 
     return (
         <Navbox>
@@ -141,6 +278,41 @@ const Nav = () => {
                     </>
                 )}
             </AuthBox>
+            <SideBox isOpen={sideOpen}>
+                <FiX className="close" onClick={() => { setSideOpen(false); }} />
+                <div className="side-auth-box">
+                    <div className="icon-box">
+                        <FaUserCircle className="user-icon" />
+                        {
+                            user ? <span className="user">{user?.name} 님</span>
+                                : <span className="user">로그인이 필요합니다</span>
+                        }
+                    </div>
+                    <div className="auth-btn-box">
+                        {user ? (
+                            <>
+                                <div className="auth-btn" onClick={() => { navigate("/mypage"); }}>MYPAGE</div>
+                                <div className="auth-btn" onClick={() => { logoutMutation.mutate() }}>LOGOUT</div>
+                            </>
+                        ) : (
+                            <>
+                                <div className="auth-btn" onClick={() => { navigate("/login"); }}>LOGIN</div>
+                                <div className="auth-btn" onClick={() => { navigate("/signup"); }}>SIGNUP</div>
+                            </>
+                        )}
+                    </div>
+                </div>
+                <div className="side-item" onClick={() => { navigate("/about"); setSideOpen(false); }}>About</div>
+                <div className="side-item" onClick={() => { setServiceOpen(!serviceOpen); }}>Service
+                    <ToggleIcon isOpen={serviceOpen} />
+                </div>
+                <div className={`service-item ${serviceOpen ? "open" : ""}`} onClick={() => { navigate("/service/voice"); setSideOpen(false); }}>Voice</div>
+                <div className={`service-item ${serviceOpen ? "open" : ""}`} onClick={() => { alert("준비중입니다.") }}>Video</div>
+                <div className="side-item" onClick={() => { navigate("/myservice"); setSideOpen(false); }}>My Service</div>
+                <div className="side-item" onClick={() => { navigate("/contactus"); setSideOpen(false); }}>Contact Us</div>
+                <img className="side-logo" src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" onClick={() => { navigate("/") }} />
+            </SideBox>
+            <Hamburger onClick={() => { setSideOpen(true); }} />
         </Navbox>
     )
 };

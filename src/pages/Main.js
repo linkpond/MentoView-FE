@@ -16,7 +16,7 @@ const fadeIn = keyframes`
 const MainBox = styled.div`
     position: relative;
     width: 100%;
-    min-height: 98vh;
+    height: calc(100vh - 65px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -27,7 +27,7 @@ const Title = styled.span`
     top: 20%;
     color: #fff;
     font-weight: bold;
-    font-size: 36px;
+    font-size: clamp(24px, 5vw, 36px);
     opacity: 0;
     animation: ${fadeIn} 0.8s ease-out forwards;
 `;
@@ -37,9 +37,9 @@ const SubTitle = styled.span`
     top: 30%;
     color: #fff;
     font-weight: bold;
-    font-size: 30px;
+    font-size: clamp(18px, 4vw, 30px);
     opacity: 0;
-    animation: ${fadeIn} 0.8s ease-out 0.5s forwards; /* 0.5초 딜레이 */
+    animation: ${fadeIn} 0.8s ease-out 0.5s forwards;
 `;
 
 const StartBtn = styled.div`
@@ -53,9 +53,9 @@ const StartBtn = styled.div`
     justify-content: center;
     color: var(--main-color);
     font-weight: bold;
-    font-size: 20px;
+    font-size: clamp(16px, 3vw, 20px);
     border-radius: 8px;
-    padding: 18px 40px 18px 40px;
+    padding: clamp(12px, 2.5vw, 18px) clamp(24px, 5vw, 40px);
     transition: all 0.15s;
     box-shadow: 0px 0px 10px 1px rgb(255, 255, 255, 0.5);
     cursor: pointer;
@@ -63,7 +63,7 @@ const StartBtn = styled.div`
         background-color: var(--main-color);
         color: #fff;
     }
-`
+`;
 
 const Main = () => {
     const navigate = useNavigate();
