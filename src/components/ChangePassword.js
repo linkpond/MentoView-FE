@@ -29,10 +29,17 @@ const InputBox = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
+    border: 2px solid red;
+    @media (max-width: 600px) {
+        width: 100%;
+    }
 `;
 
 const InputTitle = styled.span`
     font-weight: bold;
+    @media (max-width: 600px) {
+        font-size: 12px;
+    }
 `;
 
 const Input = styled.input`
@@ -50,6 +57,9 @@ const Input = styled.input`
     &::placeholder {
         font-size: 13px;
     }
+    @media (max-width: 600px) {
+        width: 70%;
+    }
 `;
 const ChangeButton = styled.button`
     width: 450px;
@@ -64,6 +74,9 @@ const ChangeButton = styled.button`
     transition: all 0.15s;
     &:hover {
         opacity: 0.7;
+    }
+    @media (max-width: 600px) {
+        width: 100%;
     }
 `;
 

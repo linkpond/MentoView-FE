@@ -70,6 +70,11 @@ const TabContentItem = styled.div`
             color: #fff;
         }
     }
+    @media (max-width: 600px) {
+        .info-box, .submit-btn {
+            width: 100%;
+        }
+    }
 `
 
 const DeleteAccount = () => {

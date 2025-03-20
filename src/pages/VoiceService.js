@@ -12,13 +12,19 @@ import { useNavigate } from "react-router-dom";
 // MainContainer
 const VoiceServiceBox = styled.div`
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 65px);
     background-color: #eee;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
+    @media (max-width: 1050px) {
+        padding: 10px;
+    }
+    @media (max-width: 600px) {
+        justify-content: start;
+    }
 `
 // Progress
 const ProgressBox = styled.div`
@@ -75,7 +81,7 @@ const ProgressItem = styled.div`
 const ContentBox = styled.div`
     width: 1000px;
     height: 550px;
-    background-color: #fff;
+    background-color: #fff; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -83,6 +89,10 @@ const ContentBox = styled.div`
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 2px 10px 1px rgb(0, 0, 0, 0.1);
+    @media (max-width: 1050px) {
+        width: 100%;
+        height: 100%;
+    }
 `
 
 const SliderBox = styled.div`
@@ -134,11 +144,11 @@ const ResumeBox = styled.div`
             position: absolute;
             top: -40px;
             left: 0;
-            width: fit-content;
+            min-width: 150px;
             height: fit-content;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: start;
             padding: 5px;
             .icon {
                 font-size: 24px;
@@ -148,6 +158,9 @@ const ResumeBox = styled.div`
                 font-size: 16px;
                 padding-top: 4px;
             }
+        }
+        @media (max-width: 600px) {
+            width: 100%;
         }
     }
 `
@@ -386,6 +399,17 @@ const InterviewItem = styled.div`
             font-size: 18px;
         }
     }
+    @media (max-width: 600px) {
+        padding: 10px 0px 0px 0px;
+        .question-box {
+            font-size: 20px;
+            border-radius: 4px;
+            box-shadow: 0px 0px 4px 1px rgb(0, 0, 0, 0.1);
+        }
+        .status-box {
+            font-size: 14px !important;
+        }
+    }
 `
 
 
@@ -414,14 +438,14 @@ const VoiceService = () => {
             navigate("/login");
         }
     }, [user, navigate]);
-    
+
     useEffect(() => {
         if (user && (!subscriptionData || subscriptionData.length === 0)) {
             alert("이용 가능한 구독권이 존재하지 않습니다.");
             navigate("/mypage");
         }
     }, [user, subscriptionData, navigate]);
-    
+
     useEffect(() => {
         if (user && subscriptionData?.length > 0 && (!filteredResumeList || filteredResumeList.length === 0)) {
             alert("이력서를 등록 후 이용해주세요.");
@@ -558,9 +582,9 @@ const VoiceService = () => {
                                         ) : (
                                             resumeList
                                                 ?.filter(v => v.deleteStatus !== true)
-                                                .map(item => (
+                                                .map((item, i) => (
                                                     <ResumeItem key={item.rid} onClick={() => handleResumeSelect(item)}>
-                                                        <span className="ri-title">{item.title}</span>
+                                                        <span className="ri-title">{i + 1}&nbsp;&middot;&nbsp;{item.title}</span>
                                                     </ResumeItem>
                                                 ))
                                         )

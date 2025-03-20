@@ -19,11 +19,17 @@ const SubscriptionHeader = styled.div`
     height: fit-content;
     display: flex;
     align-items: center;
-    justify-content: start;
+    justify-content: space-between;
     margin-bottom: 30px;
     font-weight: bold;
     border-bottom: 1.5px solid #ddd;
     padding-bottom: 10px;
+    .right, .left {
+        width: fit-content;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+    }
     .edge {
         margin-right: 5px;
         color: #555;
@@ -54,7 +60,13 @@ const SubscriptionHeader = styled.div`
         color: #777;
         margin-right: 5px;
     }
-
+    @media (max-width: 600px) {
+        flex-direction: column;
+        align-items: start;
+        .right {
+            margin-top: 10px;
+        }
+    }
 `
 const SubBtn = styled.div`
     width: 100%;
@@ -163,6 +175,19 @@ const SubscriptionItemBox = styled.div`
             }
         }
     }
+    @media (max-width: 1300px) {
+        padding: 0px;
+        .item {
+            width: 350px;
+        }
+    }
+    @media (max-width: 1000px) {
+        flex-direction: column;
+        .item {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+    }
 `
 const Overlay = styled.div`
     z-index: 998;
@@ -179,8 +204,8 @@ const Overlay = styled.div`
 
 const CancelModal = styled.div`
     position: fixed;
-    top: 40%;
-    z-index: 999;
+    top: 50%;
+    left: 50%;
     width: 350px;
     height: fit-content;
     padding: 15px;
@@ -189,10 +214,12 @@ const CancelModal = styled.div`
     align-items: center;
     justify-content: space-between;
     border-radius: 4px;
-    box-shadow: 0px 0px 4px 1px rgba(255, 255, 255);
     background-color: #fff;
+    box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    transform: ${({ $visible }) =>
+        $visible ? "translate(-50%, -50%) scale(1)" : "translate(-50%, -50%) scale(0.95)"};
     opacity: ${({ $visible }) => ($visible ? "1" : "0")};
-    transform: ${({ $visible }) => ($visible ? "scale(1)" : "scale(0.95)")};
     pointer-events: ${({ $visible }) => ($visible ? "auto" : "none")};
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
     .cancel-box {
@@ -271,7 +298,7 @@ const Subscription = () => {
 
         issueBillingKey(undefined, {
             onSuccess: async (data) => {
-                console.log("✅ 빌링키 발급 성공:", data);
+                console.log("✅ 빌링키 발급 성공:");
                 setTimeout(() => {
                     console.log("🚀 구독 요청 시작...");
                     requestSubscription(undefined, {
@@ -285,7 +312,7 @@ const Subscription = () => {
                             alert(`구독 요청 실패: ${error.message}`);
                         },
                     });
-                }, 3000);
+                }, 2500);
             },
             onError: (error) => {
                 console.error("❌ 빌링키 요청 실패:", error);
@@ -330,11 +357,15 @@ const Subscription = () => {
             <SubscriptionHeader>
                 {activeSubscription ? (
                     <>
-                        <span className="edge">나의 이용권</span>
-                        <div className="plan-edge">{activeSubscription.plan}</div>
-                        <span className="edge">다음 자동 결제일</span>
-                        <div className="date">{activeSubscription.nextBillingDate}</div>
-                        <div className="plan-cancel" onClick={() => { setOpen(true); }}>해지하기</div>
+                        <div className="left">
+                            <span className="edge">나의 이용권</span>
+                            <div className="plan-edge">{activeSubscription.plan}</div>
+                        </div>
+                        <div className="right">
+                            <span className="edge">다음 자동 결제일</span>
+                            <div className="date">{activeSubscription.nextBillingDate}</div>
+                            <div className="plan-cancel" onClick={() => { setOpen(true); }}>해지하기</div>
+                        </div>
                     </>
                 ) : (
                     <span className="edge">구매하신 이용권이 존재하지 않습니다.</span>

@@ -8,10 +8,13 @@ import { useSocialPassword } from "../hooks/useSocialPassword.js";
 
 const PasswordBox = styled.div`
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 65px);
     display: flex;
     align-items: center;
     justify-content: center;
+    @media (max-width: 500px) {
+        padding: 10px;
+    }
 `;
 
 const PasswordForm = styled.div`
@@ -33,6 +36,9 @@ const PasswordForm = styled.div`
         font-size: 14px;
         margin: 5px 0;
     }
+    @media (max-width: 500px) {
+        width: 100%;
+    }
 `;
 
 const Input = styled.input`
@@ -51,14 +57,21 @@ const Input = styled.input`
     &::placeholder {
         font-size: 13px;
     }
+    @media (max-width: 500px) {
+        width: 100%;
+    }
 `;
 
 const ButtonBox = styled.div`
-    padding: 10px;
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    @media (min-width: 501px) {
+        padding: 10px;
+    }
+    @media (max-width: 500px) {
+        margin-top: 10px;
+    }
 `;
 
 const PasswordBtn = styled.div`
@@ -87,7 +100,6 @@ const Spinner = styled.div`
     border-top: 4px solid var(--main-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-bottom: 40px;
     padding: 30px;
     @keyframes spin {
         0% { transform: rotate(0deg); }
@@ -98,7 +110,7 @@ const Spinner = styled.div`
 const MVLogin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { data: userInfo, refetch: fetchUserInfo, isFetching, isSuccess } = useUserInfo();
+    const { data: userInfo, refetch: fetchUserInfo, isFetching } = useUserInfo();
     const { mutate: submitPassword } = useSocialPassword();
     const [formData, setFormData] = useState({ password: "", passwordCheck: "" });
     const [ndg, setNdg] = useState(null);

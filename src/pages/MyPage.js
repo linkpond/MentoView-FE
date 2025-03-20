@@ -9,16 +9,23 @@ import useMyPageAuth from "../hooks/useMypageAuth";
 import useLogout from "../hooks/useLogout";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { FiMenu } from "react-icons/fi";
 
 // Mypage
 const MyPageBox = styled.div`
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 65px);
     background-color: #eee;
     padding: 0px 200px 0px 200px;
     display: flex;
     align-items: center;
     justify-content: center;
+    @media (max-width: 1300px) {
+        padding: 10px;
+    }
+    @media (max-width: 1000px) {
+        flex-direction: column;
+    }
 `
 const MyPageTabBox = styled.div`
     width: 1000px;
@@ -28,6 +35,10 @@ const MyPageTabBox = styled.div`
     border-radius: 8px;
     box-shadow: 0px 2px 10px 1px rgb(0, 0, 0, 0.1);
     overflow: hidden;
+    @media (max-width: 1300px) {
+        width: 100%;
+        height: 100%;
+    }
 `
 const MyPageTab = styled.div`
     position: relative;
@@ -54,6 +65,9 @@ const MyPageTab = styled.div`
         bottom: 10px;
         left: 15px;
     }
+    @media (max-width: 1000px) {
+        display: none;
+    }
 `
 const TabItem = styled.div`
     width: 100%;
@@ -78,6 +92,10 @@ const TabContentBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    @media (max-width: 1300px) {
+        width: 100%;
+        overflow-y: auto;
+    }
 `
 // Password
 const PasswordBox = styled.div`
@@ -129,6 +147,9 @@ const Input = styled.input`
     &::placeholder {
         font-size: 13px;
     }
+    @media (max-width: 600px) {
+        width: 300px;
+    }
 `;
 
 const ButtonBox = styled.div`
@@ -165,13 +186,57 @@ const Spinner = styled.div`
     border-top: 4px solid var(--main-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-bottom: 40px;
     padding: 30px;
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
 `;
+
+const MenuBox = styled.div`
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px auto 10px 0px;
+    cursor: pointer;
+    @media (min-width: 1001px) {
+        display: none;
+    }
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 20px;
+    color: var(--main-color);
+`;
+
+const MenuList = styled.div`
+    position: absolute;
+    top: 35px;
+    left: 0;
+    width: 140px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
+    transform: translateY(${({ isOpen }) => (isOpen ? "0px" : "-10px")});
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    visibility: ${({ isOpen }) => (isOpen ? "visible" : "hidden")};
+`;
+
+const MenuItem = styled.div`
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    &:hover {
+        background-color: #f0f0f0;
+    }
+`;
+
 
 const MyPage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -180,6 +245,7 @@ const MyPage = () => {
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [activeTab, setActiveTab] = useState("구독 관리");
+    const [activeMobileTab, setActiveMobileTab] = useState(false);
     const mutation = useMyPageAuth();
     const logoutMutation = useLogout();
     const navigate = useNavigate();
@@ -237,7 +303,7 @@ const MyPage = () => {
         "비밀번호 변경": () => <ChangePassword />,
         "회원 탈퇴": () => <DeleteAccount />,
     };
-    
+
     if (mutation.isLoading) {
         return (
             <MyPageBox>
@@ -248,6 +314,21 @@ const MyPage = () => {
 
     return (
         <MyPageBox>
+            <MenuBox onClick={() => { setActiveMobileTab(!activeMobileTab); }}>
+                <FiMenu />
+                {Object.keys(tabContents).map((tab, i) => (
+                    <MenuList isOpen={activeMobileTab}>
+                        {Object.keys(tabContents).map((tab, i) => (
+                            <MenuItem
+                                key={tab}
+                                onClick={() => setActiveTab(tab)}
+                            >
+                                {tab}
+                            </MenuItem>
+                        ))}
+                    </MenuList>
+                ))}
+            </MenuBox>
             <MyPageTabBox>
                 {isAuthenticated ? (
                     <>

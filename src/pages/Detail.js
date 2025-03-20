@@ -9,12 +9,16 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const DetailBox = styled.div`
     width: 100%;
-    min-height: 100vh;
+    min-height: calc(100vh - 65px);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 80px 200px 50px 200px;
     background-color: #eee;
+    @media (max-width: 1050px) {
+        padding: 10px;
+        align-items: start;
+    }
 `
 const InterviewBox = styled.div`
     width: fit-content;
@@ -28,6 +32,9 @@ const InterviewBox = styled.div`
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0px 0px 8px 1px rgb(0, 0, 0, 0.1);
+    @media (max-width: 1050px) {
+        min-width: 100%;
+    }
 `
 const InterviewItem = styled.div`
     width: 100%;
@@ -88,6 +95,17 @@ const AccordionContent = styled.div`
         .af-text {
             width: 87%;
         }
+        @media (max-width: 850px) {
+            flex-direction: column;
+            padding: 0;
+            .af-text, .edge {
+                width: fit-content;
+                margin-top: 10px;
+            }
+            .af-text {
+                margin-left: 20px;
+            }
+        }
     }
 `;
 
@@ -144,11 +162,13 @@ const Spinner = styled.div`
     border-top: 4px solid var(--main-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-bottom: 40px;
     padding: 30px;
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+    }
+    @media (max-width: 850px) {
+        margin: auto;
     }
 `;
 
@@ -177,7 +197,7 @@ const Detail = () => {
             },
         });
     };
-    
+
     const handlePrint = () => {
         if (!interviewBoxRef.current) return;
         const styles = Array.from(document.styleSheets)
@@ -216,6 +236,7 @@ const Detail = () => {
             };
         }
     };
+
     return (
         <DetailBox>
             <InterviewBox ref={interviewBoxRef}>

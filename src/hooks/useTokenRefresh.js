@@ -12,10 +12,10 @@ const refreshAccessToken = async (dispatch, navigate) => {
             sessionStorage.setItem("token", response.headers["authorization"].replace("Bearer ", ""));
         }
     } catch (error) {
-        console.error("Failed to refresh access token", error);
-        
-        dispatch(setUser(null));
+        sessionStorage.removeItem("user");
         sessionStorage.removeItem("token");
+        sessionStorage.removeItem("isAuthenticated");
+        dispatch(setUser(null));
         navigate("/login");
     }
 };

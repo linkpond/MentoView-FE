@@ -4,6 +4,7 @@ import useInterviewStatus from '../hooks/useInterviewStatus';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { setInterviewId } from '../redux/interviewSlice';
+import { useEffect, useState } from 'react';
 
 const ToastBox = styled.div`
     position: fixed;
@@ -34,6 +35,10 @@ const ToastBox = styled.div`
             background-color: var(--main-color);
         }
     }
+    @media (max-width: 600px) {
+        left: 10px;
+        bottom: 10px;
+    }
 `;
 
 const Spinner = styled.div`
@@ -56,6 +61,13 @@ const InterviewToast = () => {
     const { data: interviewStatus, isLoading } = useInterviewStatus(interviewId);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
+    
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 600);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     if (!interviewId || isLoading) return null;
 
@@ -65,23 +77,27 @@ const InterviewToast = () => {
         dispatch(setInterviewId(null));
     };
 
+
+
     return (
         <ToastBox>
-            {
-                interviewStatus === "COMPLETED"
-                    ? (
-                        <>
-                            <span className='toast-text'>피드백 생성이 완료되었습니다.</span>
-                            <div className='toast-btn' onClick={handleNavigate}>결과 확인</div>
-                        </>
-                    )
-                    : (
-                        <>
-                            <span className='toast-text'>피드백이 생성중입니다. 잠시만 기다려주세요 :)</span>
-                            <Spinner />
-                        </>
-                    )
-            }
+            {interviewStatus === "COMPLETED" ? (
+                <>
+                    <span className='toast-text'>
+                        {isMobile ? "생성 완료" : "피드백 생성이 완료되었습니다."}
+                    </span>
+                    <div className='toast-btn' onClick={handleNavigate}>
+                        결과 확인
+                    </div>
+                </>
+            ) : (
+                <>
+                    <span className='toast-text'>
+                        {isMobile ? "피드백 생성중" : "피드백이 생성중입니다. 잠시만 기다려주세요 :)"}
+                    </span>
+                    <Spinner />
+                </>
+            )}
         </ToastBox>
     );
 };

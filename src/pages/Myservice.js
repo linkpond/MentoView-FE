@@ -10,13 +10,20 @@ import { useSelector } from "react-redux";
 
 const MyServiceBox = styled.div`
     width: 100%;
-    min-height: 100vh;
+    min-height: calc(100vh - 65px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: #eee;
     padding: 20px 200px 20px 200px;
+    @media (max-width: 1200px) {
+        padding: 10px;
+        padding-top: 70px;
+    }
+    @media (max-width: 600px) {
+        justify-content: start;
+    }
 `
 const CreateBtn = styled.div`
     position: absolute;
@@ -54,6 +61,10 @@ const ResumeBox = styled.div`
         font-size: 24px;
         font-weight: bold;
     }
+    @media (max-width: 1200px) {
+        width: 100%;
+        min-height: 50vh;
+    }
 `
 const ResumeItem = styled.div`
     width: 100%;
@@ -76,7 +87,6 @@ const ResumeItem = styled.div`
             margin-right: 10px;
         }
         .ri-title {
-            margin-right: 20px;
             font-size: 14px;
         }
         .ri-button {
@@ -98,6 +108,22 @@ const ResumeItem = styled.div`
         .disabled {
             background-color: #f05650 !important;
             cursor: inherit !important;
+        }
+        @media (max-width: 600px) {
+            .edge {
+                margin-right: 5px;
+                white-space: nowrap;
+                
+            }
+            .ri-title {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                
+            }
+            .ri-button {
+                white-space: nowrap;
+            }
         }
     }
 `
@@ -147,6 +173,20 @@ const AccordionContent = styled.div`
         background-color: #f05650 !important;
         cursor: inherit !important;
     }
+    @media (max-width: 600px) {
+        .edge, .detail-btn {
+            white-space: nowrap;           
+        }
+        .ac-text {
+            margin: 0px 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .hide {
+            display: none;
+        }
+    }
 `;
 
 const Overlay = styled.div`
@@ -180,6 +220,10 @@ const ResumeModal = styled.div`
     transform: ${({ $visible }) => ($visible ? "scale(1)" : "scale(0.95)")};
     pointer-events: ${({ $visible }) => ($visible ? "auto" : "none")};
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    .uploading {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
     .icon-box {
         cursor: pointer;
         width: fit-content;
@@ -256,7 +300,6 @@ const Spinner = styled.div`
     border-top: 4px solid var(--main-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-bottom: 40px;
     padding: 30px;
     @keyframes spin {
         0% { transform: rotate(0deg); }
@@ -265,8 +308,8 @@ const Spinner = styled.div`
 `;
 
 const MyService = () => {
-    const { data: resumeList, refetch, isLoading } = useResumeList();
-    const { mutate: uploadResume } = useUploadResume();
+    const { data: resumeList, refetch } = useResumeList();
+    const { mutate: uploadResume, isLoading: isUploading } = useUploadResume();
     const { mutate: deleteResume } = useDeleteResume();
     const [openIndex, setOpenIndex] = useState(null);
     const [fileName, setFileName] = useState('');
@@ -295,13 +338,19 @@ const MyService = () => {
         const file = e.target.files[0];
         if (file) {
             const fileExtension = file.name.split('.').pop().toLowerCase();
-            if (fileExtension === 'pdf') {
-                setFileName(file.name);
-            } else {
+            const maxSize = 20 * 1024 * 1024;
+
+            if (fileExtension !== 'pdf') {
                 alert('PDF 파일만 업로드할 수 있습니다.');
-                setFileName('');
-                fileInputRef.current.value = '';
+            } else if (file.size > maxSize) {
+                alert('파일 크기는 20MB를 초과할 수 없습니다.');
+            } else {
+                setFileName(file.name);
+                return;
             }
+
+            setFileName('');
+            fileInputRef.current.value = '';
         }
     };
 
@@ -322,6 +371,8 @@ const MyService = () => {
                 navigate('/myservice');
                 refetch();
                 setCreateModal(false);
+                setFileName("");
+                fileInputRef.current.value = "";
             },
             onError: (error) => {
                 console.error("파일 업로드 실패:", error);
@@ -344,29 +395,38 @@ const MyService = () => {
         <MyServiceBox>
             <Overlay onClick={() => { setCreateModal(false); }} $visible={createModal} />
             <ResumeModal $visible={createModal}>
-                <div className="icon-box" onClick={handleUploadClick}>
-                    <FaFileUpload className="upload-icon" />
-                    <span className="icon-title">파일선택</span>
-                </div>
-                <input
-                    className="resume-file"
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                />
-                {
-                    fileName ?
-                        <>
-                            <span className="file-name">{fileName}</span>
-                            <span className="real">위 이력서를 업로드하시겠습니까?</span>
-                        </>
-                        : <span className="real">PDF 파일만 업로드할 수 있습니다</span>
-                }
-                <div className="btn-box">
-                    <XBtn onClick={() => { setCreateModal(false); }}>취소</XBtn>
-                    <OkBtn onClick={handleSubmit}>확인</OkBtn>
-                </div>
-            </ResumeModal>
+                {isUploading ? (
+                    <>
+                        <span className="uploading">Uploading</span>
+                        <Spinner />
+                    </>
+                ) : (
+                    <>
+                        <div className="icon-box" onClick={handleUploadClick}>
+                            <FaFileUpload className="upload-icon" />
+                            <span className="icon-title">파일선택</span>
+                        </div>
+                        <input
+                            className="resume-file"
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                        />
+                        {
+                            fileName ?
+                                <>
+                                    <span className="file-name">{fileName}</span>
+                                    <span className="real">위 이력서를 업로드하시겠습니까?</span>
+                                </>
+                                : <span className="real">PDF 파일만 업로드할 수 있습니다</span>
+                        }
+                        <div className="btn-box">
+                            <XBtn onClick={() => { setCreateModal(false); }}>취소</XBtn>
+                            <OkBtn onClick={handleSubmit}>확인</OkBtn>
+                        </div>
+                    </>
+                )}
+            </ResumeModal >
             <ResumeBox>
                 <CreateBtn onClick={() => {
                     if (filteredResumeList?.length >= 5) {
@@ -430,7 +490,7 @@ const MyService = () => {
                     )
                 }
             </ResumeBox>
-        </MyServiceBox>
+        </MyServiceBox >
     );
 };
 

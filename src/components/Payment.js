@@ -19,6 +19,11 @@ const TabContentItem = styled.div`
         font-weight: bold;
         font-size: 20px;
     }
+    @media (max-width: 400px) {
+        .empty {
+            font-size: 16px;
+        }
+    }
 `
 
 const PaymentItem = styled.div`
@@ -60,6 +65,11 @@ const PaymentItem = styled.div`
             margin-right: 10px;
         }
     }
+    @media (max-width: 500px) {
+        .hide {
+            display: none;
+        }
+    }
 `
 const ToggleIcon = styled(FaAngleRight)`
     color: var(--main-color);
@@ -93,6 +103,22 @@ const AccordionContent = styled.div`
         margin-right: 10px;
         color: #888;
     }
+    .right, .left {
+        width: fit-content;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+    }
+    @media (max-width: 550px) {
+        flex-direction: column;
+        align-items: start;
+        .left > .pay-text {
+            margin: 0;
+        }
+        .right {
+            margin-top: 10px;
+        }
+    }
 `;
 
 const Payment = () => {
@@ -106,7 +132,7 @@ const Payment = () => {
     const formatAmount = (amount) => {
         return amount.toLocaleString("ko-KR", { style: "currency", currency: "KRW" });
     };
-    
+
     return (
         <TabContentItem>
             {subscriptionData && subscriptionData.length > 0 ? (
@@ -121,8 +147,8 @@ const Payment = () => {
                                     <img className="kakao" src={process.env.PUBLIC_URL + "kakao.png"} alt="kakaopay" />
                                     <span className="edge">등록일자</span>
                                     <span className="sub-text">{item.startDate}</span>
-                                    <span className="edge">이용권</span>
-                                    <span className="plan-edge">{item.plan}</span>
+                                    <span className="edge hide">이용권</span>
+                                    <span className="plan-edge hide">{item.plan}</span>
                                     <ToggleIcon isOpen={isOpen} onClick={() => toggleAccordion(item.subId)} />
                                 </div>
                                 {item.payments
@@ -130,11 +156,15 @@ const Payment = () => {
                                     .sort((a, b) => new Date(a.paymentDate) - new Date(b.paymentDate))
                                     .map((payment, j) => (
                                         <AccordionContent key={payment.paymentId} isOpen={isOpen}>
-                                            <span className="edge-color">{j + 1}회차</span>
-                                            <span className="edge">결제일자</span>
-                                            <span className="pay-text">{new Date(payment.paymentDate).toLocaleString("ko-KR")}</span>
-                                            <span className="edge">결제금액</span>
-                                            <span className="pay-text">{formatAmount(payment.amount)}</span>
+                                            <div className="left">
+                                                <span className="edge-color">{j + 1}회차</span>
+                                                <span className="edge">결제일자</span>
+                                                <span className="pay-text">{new Date(payment.paymentDate).toLocaleString("ko-KR")}</span>
+                                            </div>
+                                            <div className="right">
+                                                <span className="edge">결제금액</span>
+                                                <span className="pay-text">{formatAmount(payment.amount)}</span>
+                                            </div>
                                         </AccordionContent>
                                     ))}
                             </PaymentItem>
