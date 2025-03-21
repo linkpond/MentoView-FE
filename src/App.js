@@ -11,6 +11,7 @@ import Detail from "./pages/Detail";
 import MyPage from "./pages/MyPage.js"
 import VoiceService from "./pages/VoiceService.js";
 import MVLogin from "./components/MVLogin.js";
+import Admin from "./pages/Admin.js";
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/mv-login" element={<MVLogin />} />
+          <Route path="/admin" element={<Admin />} />
         </Route>
       </Routes>
     </Router>
