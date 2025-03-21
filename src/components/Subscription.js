@@ -3,8 +3,9 @@ import useBillingKey from "../hooks/useBillingKey";
 import useCancelSubscription from "../hooks/useCancelSubscription";
 import useSubscription from "../hooks/useSubscription";
 import useSubscriptionStatus from "../hooks/useSubscriptionStatus";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useState } from "react";
+import useSubscriptionFree from "../hooks/useSubscriptionFree";
 
 const TabContentItem = styled.div`
     width: 100%;
@@ -20,7 +21,7 @@ const SubscriptionHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     font-weight: bold;
     border-bottom: 1.5px solid #ddd;
     padding-bottom: 10px;
@@ -93,14 +94,82 @@ const SubBtn = styled.div`
             cursor: initial;
         }
     }
+    &.disable {
+        &:hover {
+            opacity: initial;
+            cursor: initial;
+        }
+    }
 `
+const blink = keyframes`
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+`;
 const SubscriptionItemBox = styled.div`
     width: 100%;
     height: fit-content;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     padding: 0px 40px;
+    .item-outer {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .free {
+        cursor: pointer;
+        position: relative;
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-direction: row;
+        background-color: var(--main-color);
+        border: 2px solid var(--main-color);
+        border-radius: 4px;
+        margin-bottom: 10px;
+        align-items: start;
+        font-weight: bold;
+        color: #fff;
+        padding: 10px;
+        .text {
+            padding: 2px 0px;
+        }
+        .info {
+            color: #555;
+            margin-left: 10px;
+        }
+        .edge {
+            cursor: pointer;
+            position: absolute;
+            right: 0px;
+            top: -45px;
+            width: fit-content;
+            height: fit-content;
+            background-color: var(--main-color);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            animation: ${blink} 1s infinite;
+        }
+        .edge::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            right: 10px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid var(--main-color);  
+        }
+    }
     .item {
         width: 280px;
         height: 430px;
@@ -182,7 +251,9 @@ const SubscriptionItemBox = styled.div`
         }
     }
     @media (max-width: 1000px) {
-        flex-direction: column;
+        .item-outer {
+            flex-direction: column;
+        }
         .item {
             width: 100%;
             margin-bottom: 30px;
@@ -290,9 +361,11 @@ const Subscription = () => {
     const activeSubscription = subscriptionData?.find(sub => sub.status === "ACTIVE");
     const { mutate: cancelSubscription } = useCancelSubscription();
     const { mutate: requestSubscription } = useSubscription();
+    const { mutate: requestSubscriptionFree } = useSubscriptionFree();
     const { mutate: issueBillingKey } = useBillingKey();
     const [open, setOpen] = useState();
     const [inputValue, setInputValue] = useState("");
+
     const handlePayment = () => {
         console.log("🛠️ 빌링키 발급 요청 시작...");
 
@@ -302,6 +375,34 @@ const Subscription = () => {
                 setTimeout(() => {
                     console.log("🚀 구독 요청 시작...");
                     requestSubscription(undefined, {
+                        onSuccess: (subscriptionData) => {
+                            console.log("🎉 구독 요청 성공:", subscriptionData);
+                            alert(JSON.stringify(subscriptionData));
+                            refetch();
+                        },
+                        onError: (error) => {
+                            console.error("❌ 구독 요청 실패:", error);
+                            alert(`구독 요청 실패: ${error.message}`);
+                        },
+                    });
+                }, 2500);
+            },
+            onError: (error) => {
+                console.error("❌ 빌링키 요청 실패:", error);
+                alert(`Billing Key 요청 실패: ${error.message}`);
+            },
+        });
+    };
+
+    const handlePaymentFree = () => {
+        console.log("🛠️ 빌링키 발급 요청 시작...");
+
+        issueBillingKey(undefined, {
+            onSuccess: async (data) => {
+                console.log("✅ 빌링키 발급 성공:");
+                setTimeout(() => {
+                    console.log("🚀 구독 요청 시작...");
+                    requestSubscriptionFree(undefined, {
                         onSuccess: (subscriptionData) => {
                             console.log("🎉 구독 요청 성공:", subscriptionData);
                             alert(JSON.stringify(subscriptionData));
@@ -372,65 +473,75 @@ const Subscription = () => {
                 )}
             </SubscriptionHeader>
             <SubscriptionItemBox>
-                <div className="item">
-                    <div className="item-header">
-                        <span className="it-text">BASIC</span>
-                        <div className="it-icon">
-                            <FaRegCreditCard className="card" />
-                            <span className="price">월 &#8361;10,000</span>
+                {
+                    subscriptionData?.length > 0 ? (
+                        null
+                    ) : (
+                        <div className="free" onClick={handlePaymentFree}>
+                            <span className="text">BASIC PLAN 30일 FreeTier 제공!</span>
+                            <span className="text info">* 30일 후 BASIC PLAN 자동결제 등록</span>
+                            <div className="edge">Click</div>
+                        </div>
+                    )
+                }
+                <div className="item-outer">
+                    <div className="item">
+                        <div className="item-header">
+                            <span className="it-text">BASIC</span>
+                            <div className="it-icon">
+                                <FaRegCreditCard className="card" />
+                                <span className="price">월 &#8361;10,000</span>
+                            </div>
+                        </div>
+                        <div className="plan-outer">
+                            <div className="plan-title">합리적인 가격으로 서비스를 이용하고 싶으신 분들에게 추천합니다</div>
+                            <span className="plan-edge">이력서 등록</span>
+                            <div className="plan-text-box">
+                                <span className="plna-text">&middot; 이력서등록 5건</span>
+                                <FaCheckCircle className="check" />
+                            </div>
+                            <span className="plan-edge">AI 음성면접</span>
+                            <div className="plan-text-box">
+                                <span className="plna-text">&middot; 면접 응시 무제한</span>
+                                <FaCheckCircle className="check" />
+                            </div>
+                            {activeSubscription ? (
+                                <SubBtn className="active">이용중인 서비스</SubBtn>
+                            ) : (
+                                <SubBtn onClick={handlePayment}>이용권 구매</SubBtn>
+                            )}
                         </div>
                     </div>
-                    <div className="plan-outer">
-                        <div className="plan-title">합리적인 가격으로 서비스를 이용하고 싶으신 분들에게 추천합니다</div>
-                        <span className="plan-edge">이력서 등록</span>
-                        <div className="plan-text-box">
-                            <span className="plna-text">&middot; 이력서등록 5건</span>
-                            <FaCheckCircle className="check" />
+                    <div className="item">
+                        <div className="item-header">
+                            <span className="it-text">PREMIUM</span>
+                            <div className="it-icon">
+                                <FaRegCreditCard className="card" />
+                                <span className="price">월 &#8361;20,000</span>
+                            </div>
                         </div>
-                        <span className="plan-edge">AI 음성면접</span>
-                        <div className="plan-text-box">
-                            <span className="plna-text">&middot; 면접 응시 무제한</span>
-                            <FaCheckCircle className="check" />
+                        <div className="plan-outer">
+                            <div className="plan-title">실제 면접같은 영상면접 서비스를 이용해 보실 수 있습니다</div>
+                            <span className="plan-edge">이력서 등록</span>
+                            <div className="plan-text-box">
+                                <span className="plna-text">&middot; 이력서등록 무제한</span>
+                                <FaCheckCircle className="check" />
+                            </div>
+                            <span className="plan-edge">AI 음성면접</span>
+                            <div className="plan-text-box">
+                                <span className="plna-text">&middot; 면접 응시 무제한</span>
+                                <FaCheckCircle className="check" />
+                            </div>
+                            <span className="plan-edge">AI 영상면접</span>
+                            <div className="plan-text-box">
+                                <span className="plna-text">&middot; 면접 응시 무제한</span>
+                                <FaCheckCircle className="check" />
+                            </div>
+                            <SubBtn className="disable">준비중</SubBtn>
                         </div>
-                        {activeSubscription ? (
-                            <SubBtn className="active">이용중인 서비스</SubBtn>
-                        ) : (
-                            <SubBtn onClick={handlePayment}>이용권 구매</SubBtn>
-                        )}
                     </div>
                 </div>
-                <div className="item">
-                    <div className="item-header">
-                        <span className="it-text">PREMIUM</span>
-                        <div className="it-icon">
-                            <FaRegCreditCard className="card" />
-                            <span className="price">월 &#8361;20,000</span>
-                        </div>
-                    </div>
-                    <div className="plan-outer">
-                        <div className="plan-title">실제 면접같은 영상면접 서비스를 이용해 보실 수 있습니다</div>
-                        <span className="plan-edge">이력서 등록</span>
-                        <div className="plan-text-box">
-                            <span className="plna-text">&middot; 이력서등록 무제한</span>
-                            <FaCheckCircle className="check" />
-                        </div>
-                        <span className="plan-edge">AI 음성면접</span>
-                        <div className="plan-text-box">
-                            <span className="plna-text">&middot; 면접 응시 무제한</span>
-                            <FaCheckCircle className="check" />
-                        </div>
-                        <span className="plan-edge">AI 영상면접</span>
-                        <div className="plan-text-box">
-                            <span className="plna-text">&middot; 면접 응시 무제한</span>
-                            <FaCheckCircle className="check" />
-                        </div>
-                        {activeSubscription ? (
-                            <SubBtn className="active">이용중인 서비스</SubBtn>
-                        ) : (
-                            <SubBtn onClick={handlePayment}>이용권 구매</SubBtn>
-                        )}
-                    </div>
-                </div>
+
             </SubscriptionItemBox>
         </TabContentItem>
     );

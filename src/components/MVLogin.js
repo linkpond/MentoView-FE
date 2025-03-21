@@ -119,6 +119,9 @@ const MVLogin = () => {
     const [isUserFetched, setIsUserFetched] = useState(false);
 
     useEffect(() => {
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("isAuthenticated");
         const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
         const ndgValue = params.get("ndg");

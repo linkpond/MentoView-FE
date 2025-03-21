@@ -29,7 +29,6 @@ const InputBox = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
-    border: 2px solid red;
     @media (max-width: 600px) {
         width: 100%;
     }

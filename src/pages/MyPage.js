@@ -29,7 +29,7 @@ const MyPageBox = styled.div`
 `
 const MyPageTabBox = styled.div`
     width: 1000px;
-    height: 550px;
+    height: 600px;
     background-color: #fff;
     display: flex;
     border-radius: 8px;
