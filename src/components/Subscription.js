@@ -365,7 +365,7 @@ const Subscription = () => {
     const { mutate: issueBillingKey } = useBillingKey();
     const [open, setOpen] = useState();
     const [inputValue, setInputValue] = useState("");
-
+    console.log(subscriptionData);
     const handlePayment = () => {
         console.log("🛠️ 빌링키 발급 요청 시작...");
 
