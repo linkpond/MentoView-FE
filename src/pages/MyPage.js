@@ -251,12 +251,12 @@ const MyPage = () => {
     const navigate = useNavigate();
     const user = useSelector(state => state.auth.user);
 
-    // useEffect(() => {
-    //     if (!user) {
-    //         alert("로그인이 필요한 서비스입니다.");
-    //         navigate("/login");
-    //     }
-    // }, [user, navigate]);
+    useEffect(() => {
+        if (!user) {
+            alert("로그인이 필요한 서비스입니다.");
+            navigate("/login");
+        }
+    }, [user, navigate]);
 
     const handleChange = (e) => {
         setPassword(e.target.value);
@@ -330,7 +330,7 @@ const MyPage = () => {
                 ))}
             </MenuBox>
             <MyPageTabBox>
-                {!isAuthenticated ? (
+                {isAuthenticated ? (
                     <>
                         <MyPageTab>
                             {Object.keys(tabContents).map((tab) => (
