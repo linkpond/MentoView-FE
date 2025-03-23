@@ -25,7 +25,7 @@ export const useTokenRefresh = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const interval = setInterval(() => refreshAccessToken(dispatch, navigate), 20 * 60 * 1000);
+        const interval = setInterval(() => refreshAccessToken(dispatch, navigate), 1 * 60 * 1000);
         return () => clearInterval(interval);
     }, [dispatch, navigate]);
 };

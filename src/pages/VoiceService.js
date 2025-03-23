@@ -441,7 +441,7 @@ const VoiceService = () => {
 
     useEffect(() => {
         if (user && (!subscriptionData || subscriptionData.length === 0)) {
-            alert("이용 가능한 구독권이 존재하지 않습니다.");
+            alert("마이페이지에서 첫달 무료 이용권을 등록하고 이용해보세요!");
             navigate("/mypage");
         }
     }, [user, subscriptionData, navigate]);
@@ -618,7 +618,7 @@ const VoiceService = () => {
                                             return (
                                                 <InterviewItem key={item.questionId}>
                                                     <div className="question-box">
-                                                        <span className="edge">Q{i + 1}.</span>
+                                                        <span className="edge">Q</span>
                                                         <span className="question">{item.question}</span>
                                                     </div>
                                                     <FaMicrophone
