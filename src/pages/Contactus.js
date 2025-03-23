@@ -46,7 +46,7 @@ const KakaoMap = () => {
             } else {
                 const script = document.createElement("script");
                 const kakaoApiKey = process.env.REACT_APP_KAKAO_MAP_KEY;
-                script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&autoload=true&libraries=services`;
+                script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&autoload=false&libraries=services`;
                 script.async = true;
                 script.onload = () => {
                     window.kakao.maps.load(() => {
