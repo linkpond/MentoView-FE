@@ -37,18 +37,21 @@ const StyledMap = styled.div`
 
 const KakaoMap = () => {
     const [isLoaded, setIsLoaded] = useState(false);
-    const [mapCenter, setMapCenter] = useState(null);
+    const [mapCenter, setMapCenter] = useState({ lat: 37.6342, lng: 126.7158 });
 
     useEffect(() => {
         const loadKakaoMap = () => {
             if (window.kakao && window.kakao.maps) {
-                window.kakao.maps.load(() => setIsLoaded(true));
+                setIsLoaded(true);
             } else {
                 const script = document.createElement("script");
-                script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_MAP_KEY}&autoload=true&libraries=services`;
+                const kakaoApiKey = process.env.REACT_APP_KAKAO_MAP_KEY;
+                script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&autoload=true&libraries=services`;
                 script.async = true;
                 script.onload = () => {
-                    window.kakao.maps.load(() => setIsLoaded(true));
+                    window.kakao.maps.load(() => {
+                        setIsLoaded(true);
+                    });
                 };
                 document.head.appendChild(script);
             }
@@ -57,18 +60,12 @@ const KakaoMap = () => {
         loadKakaoMap();
     }, []);
 
-    useEffect(() => {
-        if (isLoaded) {
-            setMapCenter(new window.kakao.maps.LatLng(37.6342, 126.7158));
-        }
-    }, [isLoaded]);
-
-    if (!isLoaded || !mapCenter) return <p>지도를 불러오는 중...</p>;
+    if (!isLoaded) return <p>지도를 불러오는 중...</p>;
 
     return (
         <StyledMap>
-            <Map center={{ lat: mapCenter.getLat(), lng: mapCenter.getLng() }} level={5} style={{ width: "100%", height: "100%" }}>
-                <MapMarker position={{ lat: mapCenter.getLat(), lng: mapCenter.getLng() }} />
+            <Map center={mapCenter} level={5} style={{ width: "100%", height: "100%" }}>
+                <MapMarker position={mapCenter} />
                 <MapTypeControl position="TOPRIGHT" />
                 <ZoomControl position="RIGHT" />
             </Map>
@@ -139,9 +136,9 @@ const Contactus = () => {
                 <KakaoMap />
                 <div className="location-box">
                     <Edge>Address</Edge>
-                    <span className="lo-text"><FaLocationDot className="icon" />서울 종로구 종로3길17, 광화문D타워 D1동 16층, 17층</span>
+                    <span className="lo-text"><FaLocationDot className="icon"/>서울 종로구 종로3길17, 광화문D타워 D1동 16층, 17층</span>
                     <Edge>Email</Edge>
-                    <span className="lo-text"><IoMailSharp className="icon" />contact@likelion.net</span>
+                    <span className="lo-text"><IoMailSharp className="icon"/>contact@likelion.net</span>
                     <Edge>Tel</Edge>
                     <span className="lo-text"><FaPhoneFlip className="icon sz" /> 010-1234-5678</span>
                 </div>
