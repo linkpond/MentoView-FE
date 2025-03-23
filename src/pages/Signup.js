@@ -208,28 +208,32 @@ const Signup = () => {
     });
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState("");
-
     const { mutate: signup, isLoading } = useSignup();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[.@$!%?&\^~+=()\[\]#-])[A-Za-z\d.@$!%*?&\^~+=()\[\]#-]{8,15}$/;
+    const forbiddenChars = /[^A-Za-z\d.@$!%?&\^~+=()\[\]#-]/;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setErrorMessage("");
-
         if (name === "email") {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(value)) {
                 setErrorMessage("올바른 이메일 형식이 아닙니다.");
             }
         }
-
+    
         if (name === "password") {
-            const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{8,15}$/;
-            if (!passwordRegex.test(value)) {
+            if (forbiddenChars.test(value)) {
+                setErrorMessage("비밀번호에 허용되지 않은 특수문자가 포함되어 있습니다.");
+            } else if (!passwordRegex.test(value)) {
                 setErrorMessage("비밀번호는 8~15자이며, 영문자, 숫자, 특수문자를 포함해야 합니다.");
             }
+    
             if (confirmPassword && value !== confirmPassword) {
                 setErrorMessage("비밀번호가 일치하지 않습니다.");
             }
+    
             setFormData({ ...formData, password: value });
         } else if (name === "confirmPassword") {
             setConfirmPassword(value);
@@ -240,12 +244,9 @@ const Signup = () => {
             setFormData({ ...formData, [name]: value });
         }
     };
-
+    
     const handleSignup = () => {
         setErrorMessage("");
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{8,15}$/;
-
         if (!agree) {
             alert("개인정보 수집 및 이용에 동의하셔야 합니다.");
             return;
@@ -258,6 +259,10 @@ const Signup = () => {
             setErrorMessage("올바른 이메일 형식이 아닙니다.");
             return;
         }
+        if (forbiddenChars.test(formData.password)) {
+            setErrorMessage("비밀번호에 허용되지 않은 특수문자가 포함되어 있습니다.");
+            return;
+        }
         if (!passwordRegex.test(formData.password)) {
             setErrorMessage("비밀번호는 8~15자이며, 영문자, 숫자, 특수문자를 포함해야 합니다.");
             return;
@@ -266,7 +271,7 @@ const Signup = () => {
             setErrorMessage("비밀번호가 일치하지 않습니다.");
             return;
         }
-
+    
         signup(formData, {
             onSuccess: () => {
                 alert("회원가입이 완료되었습니다.");
@@ -281,6 +286,7 @@ const Signup = () => {
             },
         });
     };
+
     return (
         <SignupBox>
             <SignupFormBox>
