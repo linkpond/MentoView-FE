@@ -40,27 +40,19 @@ const KakaoMap = () => {
     const [mapCenter, setMapCenter] = useState({ lat: 37.6342, lng: 126.7158 });
 
     useEffect(() => {
-        const loadKakaoMap = () => {
-            if (window.kakao && window.kakao.maps) {
-                setIsLoaded(true);
-            } else {
-                const script = document.createElement("script");
-                const kakaoApiKey = process.env.REACT_APP_KAKAO_MAP_KEY;
-                script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&autoload=false&libraries=services`;
-                script.async = true;
-                script.onload = () => {
-                    window.kakao.maps.load(() => {
-                        setIsLoaded(true);
-                    });
-                };
-                document.head.appendChild(script);
-            }
-        };
-
-        loadKakaoMap();
+        if (window.kakao && window.kakao.maps) {
+            setIsLoaded(true);
+        } else {
+            const script = document.createElement("script");
+            const kakaoApiKey = process.env.REACT_APP_KAKAO_MAP_KEY;
+            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${kakaoApiKey}&autoload=true&libraries=services`;
+            script.async = true;
+            script.onload = () => setIsLoaded(true);
+            document.head.appendChild(script);
+        }
     }, []);
 
-    // if (!isLoaded) return <p>지도를 불러오는 중...</p>;
+    if (!isLoaded) return <p>지도를 불러오는 중...</p>;
 
     return (
         <StyledMap>
