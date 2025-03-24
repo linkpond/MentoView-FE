@@ -15,16 +15,24 @@ const useLogout = () => {
     return useMutation({
         mutationFn: logoutRequest,
         onSuccess: () => {
-            sessionStorage.removeItem("user");
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("isAuthenticated");
-            dispatch(logout());
-            navigate("/");
+            clearSession();
         },
         onError: (error) => {
             console.error("로그아웃 실패:", error);
+
+            if (error.response?.status === 500 || error.response?.status === 401) {
+                clearSession();
+            }
         },
     });
+
+    function clearSession() {
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("isAuthenticated");
+        dispatch(logout());
+        navigate("/");
+    }
 };
 
 export default useLogout;
