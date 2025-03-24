@@ -37,7 +37,7 @@ const StyledMap = styled.div`
 
 const KakaoMap = () => {
     const [isLoaded, setIsLoaded] = useState(false);
-    const [mapCenter, setMapCenter] = useState({ lat: 37.6342, lng: 126.7158 });
+    const mapCenter = { lat: 37.6342, lng: 126.7158 };
 
     useEffect(() => {
         const loadKakaoMap = () => {
@@ -87,6 +87,8 @@ const MapBox = styled.div`
         align-items: start;
 
         .lo-text {
+            display: flex;
+            align-items: center;
             font-weight: bold;
             margin: 5px 0 20px 0;
         }
@@ -96,7 +98,8 @@ const MapBox = styled.div`
         }
 
         .icon {
-            color: var(--main-color) !important;
+            color: var(--main-color);
+            margin-right: 5px;
         }
     }
     @media (max-width: 1200px) {

@@ -118,6 +118,21 @@ const SliderItem = styled.div`
     justify-content: center;
     font-size: 24px;
     font-weight: bold;
+    .end-box {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        .end-top {
+            font-size: 24px;
+        }
+        .end-bottom {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    }
 `;
 
 // Item-Resume
@@ -662,7 +677,11 @@ const VoiceService = () => {
                             </InterviewBox>
                         </SliderItem>
                         <SliderItem>
-                            면접 종료
+                            <div className="end-box">
+                                <span className="end-top">면접이 종료되었습니다.</span>
+                                <span className="end-bottom">결과는 좌측 하단의 안내창에 표시 될 예정입니다.</span>
+                                <span className="end-bottom">이용해 주셔서 감사합니다 :)</span>
+                            </div>
                         </SliderItem>
                     </SliderWrapper>
                 </SliderBox>

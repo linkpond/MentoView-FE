@@ -5,7 +5,7 @@ import Nav from "./Nav";
 import Footer from "./Footer";
 import Back from "./Back";
 import InterviewToast from "./InterviewToast";
-import { useTokenRefresh } from "../hooks/useTokenRefresh";
+// import { useTokenRefresh } from "../hooks/useTokenRefresh";
 import Kakao from "./Kakao";
 
 const LayoutContainer = styled.div`
@@ -26,7 +26,7 @@ const LayoutContainer = styled.div`
 const Layout = () => {
   const location = useLocation();
   const hasBackground = location.pathname === "/";
-  useTokenRefresh();
+  // useTokenRefresh();
   return (
     <>
       <GlobalStyles />
