@@ -618,8 +618,7 @@ const VoiceService = () => {
                                             return (
                                                 <InterviewItem key={item.questionId}>
                                                     <div className="question-box">
-                                                        <span className="edge">Q</span>
-                                                        <span className="question">{item.question}</span>
+                                                        <span className="question">Q{item.question}</span>
                                                     </div>
                                                     <FaMicrophone
                                                         className="record"

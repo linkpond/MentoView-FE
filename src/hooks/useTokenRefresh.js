@@ -12,6 +12,7 @@ const refreshAccessToken = async (dispatch, navigate) => {
             sessionStorage.setItem("token", response.headers["authorization"].replace("Bearer ", ""));
         }
     } catch (error) {
+        alert("토큰 만료로 인한 재 로그인이 필요합니다");
         sessionStorage.removeItem("user");
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("isAuthenticated");

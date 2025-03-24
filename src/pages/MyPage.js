@@ -263,8 +263,13 @@ const MyPage = () => {
     };
 
     useEffect(() => {
-        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{8,15}$/;
-        if (password && !passwordRegex.test(password)) {
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&^~+=()[\]#-])[A-Za-z\d@$!%*?&^~+=()[\]#-]{8,15}$/;
+        const forbiddenChars = /[^A-Za-z\d@$!%*?&^~+=()[\]#-]/;
+        if (!password) {
+            setErrorMessage("");
+        } else if (forbiddenChars.test(password)) {
+            setErrorMessage("비밀번호에 허용되지 않은 특수문자가 포함되어 있습니다.");
+        } else if (!passwordRegex.test(password)) {
             setErrorMessage("비밀번호는 8~15자이며, 영문자, 숫자, 특수문자를 포함해야 합니다.");
         } else {
             setErrorMessage("");

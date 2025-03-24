@@ -256,8 +256,7 @@ const Detail = () => {
                         return (
                             <InterviewItem key={item.questionId}>
                                 <div className="ii-inner">
-                                    <span className="edge">Q{i + 1}</span>
-                                    <span className="ii-title">{item.question}</span>
+                                    <span className="ii-title">Q{item.question}</span>
                                     <ToggleIcon isOpen={isOpen} onClick={() => toggleAccordion(i)} />
                                 </div>
                                 <AccordionContent isOpen={isOpen}>
