@@ -12,6 +12,7 @@ import MyPage from "./pages/MyPage.js"
 import VoiceService from "./pages/VoiceService.js";
 import MVLogin from "./components/MVLogin.js";
 import Admin from "./pages/Admin.js";
+import VideoService from "./pages/VideoService.js";
 
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/about" element={<About />} />
           <Route path="/service/voice" element={<VoiceService />} />
-          <Route path="/service/video" element={"video"} />
+          <Route path="/service/video" element={<VideoService />} />
           <Route path="/myservice" element={<MyService />} />
           <Route path="/myservice/:interviewId" element={<Detail />} />
           <Route path="/contactus" element={<Contactus />} />

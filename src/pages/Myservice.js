@@ -463,7 +463,7 @@ const MyService = () => {
                     }
                 }}>이력서 등록</CreateBtn>
                 {
-                    filteredResumeList && filteredResumeList?.length > 0 ? (
+                    resumeList && resumeList?.length > 0 ? (
                         resumeList.map((item, i) => {
                             const isOpen = openIndex === item.resumeId;
                             return (
@@ -486,7 +486,7 @@ const MyService = () => {
                                                 <AccordionContent key={item2.interviewId} isOpen={isOpen}>
                                                     <span className="edge">{j + 1}&nbsp;&middot;&nbsp;</span>
                                                     <span className="edge">응시일자</span>
-                                                    <span className="ac-text">{item2.created_at}</span>
+                                                    <span className="ac-text">{new Date(item2.created_at).toLocaleString("ko-KR")}</span>
                                                     <span className="edge">타입</span>
                                                     <span className="ac-text">{item2.interviewType}</span>
                                                     <span className="edge">상태</span>

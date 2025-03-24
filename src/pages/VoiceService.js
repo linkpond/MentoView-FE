@@ -438,6 +438,7 @@ const VoiceService = () => {
     const [resumeModal, setResumeModal] = useState(false);
     const [recording, setRecording] = useState(false);
     const [isRecordingComplete, setIsRecordingComplete] = useState(false);
+    const [stopDisabled, setStopDisabled] = useState(false);
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
     const navigate = useNavigate();
@@ -494,6 +495,12 @@ const VoiceService = () => {
 
             mediaRecorder.start();
             setRecording(true);
+            setStopDisabled(true);
+
+            setTimeout(() => {
+                setStopDisabled(false);
+            }, 1000);
+
         } catch (error) {
             console.error("녹음 시작 중 오류 발생:", error);
         }
@@ -641,7 +648,7 @@ const VoiceService = () => {
                                                         style={{ cursor: isRecordingComplete ? "default" : "pointer", opacity: isRecordingComplete ? 0.5 : 1 }}
                                                     />
                                                     <div className="button-box">
-                                                        <FaStop className="stop" onClick={stopRecording} />
+                                                        <FaStop className="stop" onClick={!stopDisabled ? stopRecording : undefined} />
                                                         {isRecordingComplete && questionStep < 5 && (
                                                             <div className="rec-btn next" onClick={handleNextQuestion}>
                                                                 다음 질문
