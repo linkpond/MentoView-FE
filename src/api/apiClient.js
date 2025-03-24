@@ -28,6 +28,7 @@ apiClient.interceptors.response.use(
 
         if (error.response) {
             const status = error.response.status;
+            const errorMessage = error.response.data;
 
             if (!originalRequest._retryCount) {
                 originalRequest._retryCount = 0;
@@ -37,17 +38,27 @@ apiClient.interceptors.response.use(
                 originalRequest._retryCount += 1;
 
                 try {
-                    const response = await apiClient.post("/api/token/access");
+                    const response = await apiClient.post("/api/post/access");
                     if (response.status === 200 && response.headers["authorization"]) {
                         const newToken = response.headers["authorization"].replace("Bearer ", "");
-                        sessionStorage.setItem("token", newToken);
-
+                        apiClient.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
                         originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
                         return apiClient(originalRequest);
                     }
                 } catch (refreshError) {
                     console.error("토큰 갱신 실패:", refreshError);
                 }
+            }
+
+            if (status === 400) {
+                if (errorMessage === "refresh token null") {
+                    alert("리프레시 토큰이 존재하지 않습니다. 다시 로그인해주세요.");
+                } else if (errorMessage === "refresh token expired") {
+                    alert("리프레시 토큰이 만료되었습니다. 다시 로그인해주세요.");
+                }
+                sessionStorage.clear();
+                dispatch(setUser(null));
+                window.location.href = "/login";
             }
 
             if (status === 401) {
@@ -61,5 +72,6 @@ apiClient.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
 
 export default apiClient;
