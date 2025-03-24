@@ -87,6 +87,7 @@ const DeleteAccount = () => {
 
         deleteAccountMutation.mutate(null, {
             onSuccess: () => {
+                alert("회원 탈퇴가 완료되었습니다.");
                 sessionStorage.removeItem("token");
                 sessionStorage.removeItem("user");
                 sessionStorage.removeItem("isAuthenticated");

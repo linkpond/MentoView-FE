@@ -211,8 +211,8 @@ const Signup = () => {
     const { mutate: signup, isLoading } = useSignup();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[.@$!%?&\^~+=()\[\]#-])[A-Za-z\d.@$!%*?&\^~+=()\[\]#-]{8,15}$/;
-    const forbiddenChars = /[^A-Za-z\d.@$!%?&\^~+=()\[\]#-]/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%?&^~+=()[\]#-])[A-Za-z\d@$!%?&^~+=()[\]#-]{8,15}$/;
+    const forbiddenChars = /[^A-Za-z\d@$!%?&^~+=()[\]#-]/;
 
     const handleChange = (e) => {
         const { name, value } = e.target;

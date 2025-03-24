@@ -93,8 +93,8 @@ const ChangePassword = () => {
     };
 
     useEffect(() => {
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[.@$!%?&\^~+=()\[\]#-])[A-Za-z\d.@$!%*?&\^~+=()\[\]#-]{8,15}$/;
-        const forbiddenChars = /[^A-Za-z\d.@$!%?&\^~+=()\[\]#-]/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%?&^~+=()[\]#-])[A-Za-z\d@$!%?&^~+=()[\]#-]{8,15}$/;
+        const forbiddenChars = /[^A-Za-z\d@$!%?&^~+=()[\]#-]/;
     
         if (forbiddenChars.test(passwords.beforePassword)) {
             setErrorMessage("현재 비밀번호에 허용되지 않은 특수문자가 포함되어 있습니다.");
