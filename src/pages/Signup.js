@@ -275,6 +275,8 @@ const Signup = () => {
                     setErrorMessage("이메일이 중복되었습니다.");
                 } else {
                     setErrorMessage("회원가입 중 오류가 발생했습니다.");
+                    console.log(err.message);
+                    console.log(err);
                 }
             },
         });

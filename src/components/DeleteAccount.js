@@ -3,6 +3,8 @@ import { FaRegCheckCircle, FaCheckCircle } from "react-icons/fa";
 import { useState } from "react";
 import useDeleteAccount from "../hooks/useDeleteAccount";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/authSlice";
 
 const TabContentItem = styled.div`
     width: 100%;
@@ -81,7 +83,7 @@ const DeleteAccount = () => {
     const [agree, setAgree] = useState(false);
     const navigate = useNavigate();
     const deleteAccountMutation = useDeleteAccount();
-
+    const dispatch = useDispatch();
     const handleDeleteAccount = () => {
         if (!agree) return;
 
@@ -91,6 +93,7 @@ const DeleteAccount = () => {
                 sessionStorage.removeItem("token");
                 sessionStorage.removeItem("user");
                 sessionStorage.removeItem("isAuthenticated");
+                dispatch(setUser(null));
                 navigate("/");
             },
             onError: (error) => {
