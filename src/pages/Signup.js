@@ -277,6 +277,7 @@ const Signup = () => {
                     setErrorMessage("회원가입 중 오류가 발생했습니다.");
                     console.log(err.message);
                     console.log(err);
+                    console.log("서버 응답 데이터:", err.response?.data);
                 }
             },
         });
