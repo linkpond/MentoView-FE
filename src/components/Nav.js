@@ -96,7 +96,7 @@ const AuthButton = styled.div`
 `
 const DropdownBox = styled.div`
     position: absolute;
-    top: 50px;
+    top: 45px;
     width: 80px;
     height: fit-content;
     display: ${({ isVisible }) => (isVisible ? "flex" : "none")};
