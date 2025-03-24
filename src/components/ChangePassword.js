@@ -138,8 +138,7 @@ const ChangePassword = () => {
                 setPasswords({ beforePassword: "", afterPassword: "", afterPasswordCheck: "" });
             },
             onError: (error) => {
-                console.log(error);
-                const errorMessage = error.response?.data || "비밀번호 변경 실패";
+                const errorMessage = error.response?.data?.message || "비밀번호 변경 실패";
                 alert(errorMessage);
             },
         });
