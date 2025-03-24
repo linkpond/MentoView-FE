@@ -310,21 +310,23 @@ const Spinner = styled.div`
 const MyService = () => {
     const { data: resumeList, refetch } = useResumeList();
     const { mutate: uploadResume, isLoading: isUploading } = useUploadResume();
-    const { mutate: deleteResume } = useDeleteResume();
+    const { mutate: deleteResume, isLoading: isDeleting } = useDeleteResume();
     const [openIndex, setOpenIndex] = useState(null);
     const [fileName, setFileName] = useState('');
     const [createModal, setCreateModal] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [selectedResumeId, setSelectedResumeId] = useState(null);
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
     const filteredResumeList = resumeList?.filter(item => item.deleteStatus !== true);
     const user = useSelector(state => state.auth.user);
 
-    useEffect(() => {
-        if (!user) {
-            alert("로그인이 필요한 서비스입니다.");
-            navigate("/login");
-        }
-    }, [user, navigate]);
+    // useEffect(() => {
+    //     if (!user) {
+    //         alert("로그인이 필요한 서비스입니다.");
+    //         navigate("/login");
+    //     }
+    // }, [user, navigate]);
 
     const toggleAccordion = (index) => {
         setOpenIndex(openIndex === index ? null : index);
@@ -381,9 +383,18 @@ const MyService = () => {
     };
 
     const handleDeleteClick = (resumeId) => {
-        deleteResume(resumeId, {
+        setSelectedResumeId(resumeId);
+        setDeleteModal(true);
+    };
+
+    const confirmDelete = () => {
+        if (!selectedResumeId) return;
+
+        deleteResume(selectedResumeId, {
             onSuccess: () => {
                 refetch();
+                setDeleteModal(false);
+                setSelectedResumeId(null);
             },
             onError: (error) => {
                 console.error("삭제 실패:", error);
@@ -393,7 +404,7 @@ const MyService = () => {
 
     return (
         <MyServiceBox>
-            <Overlay onClick={() => { setCreateModal(false); }} $visible={createModal} />
+            <Overlay onClick={() => { setCreateModal(false); setDeleteModal(false); }} $visible={createModal || deleteModal} />
             <ResumeModal $visible={createModal}>
                 {isUploading ? (
                     <>
@@ -423,6 +434,22 @@ const MyService = () => {
                         <div className="btn-box">
                             <XBtn onClick={() => { setCreateModal(false); }}>취소</XBtn>
                             <OkBtn onClick={handleSubmit}>확인</OkBtn>
+                        </div>
+                    </>
+                )}
+            </ResumeModal >
+            <ResumeModal $visible={deleteModal}>
+                {isDeleting ? (
+                    <>
+                        <span className="uploading">Deleting</span>
+                        <Spinner />
+                    </>
+                ) : (
+                    <>
+                        <span className="real">이력서를 삭제하시겠습니까?</span>
+                        <div className="btn-box">
+                            <XBtn onClick={() => setDeleteModal(false)}>취소</XBtn>
+                            <OkBtn onClick={confirmDelete}>확인</OkBtn>
                         </div>
                     </>
                 )}
