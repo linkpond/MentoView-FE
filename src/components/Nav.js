@@ -249,7 +249,7 @@ const Nav = () => {
 
     return (
         <Navbox>
-            <img className="logo" src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" onClick={() => { navigate("/") }} />
+            <img className="logo" src={`${process.env.PUBLIC_URL}/logo.webp`} alt="logo" onClick={() => { navigate("/") }} />
             <MenuBox>
                 <div className="menu-item" onClick={() => { navigate("/about"); window.scrollTo(0, 0); }}>About</div>
                 <div className="menu-item re"
@@ -310,7 +310,7 @@ const Nav = () => {
                 <div className={`service-item ${serviceOpen ? "open" : ""}`} onClick={() => { alert("준비중입니다.") }}>Video</div>
                 <div className="side-item" onClick={() => { navigate("/myservice"); setSideOpen(false); }}>My Service</div>
                 <div className="side-item" onClick={() => { navigate("/contactus"); setSideOpen(false); }}>Contact Us</div>
-                <img className="side-logo" src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" onClick={() => { navigate("/") }} />
+                <img className="side-logo" src={`${process.env.PUBLIC_URL}/logo.webp`} alt="logo" onClick={() => { navigate("/") }} />
             </SideBox>
             <Hamburger onClick={() => { setSideOpen(true); }} />
         </Navbox>

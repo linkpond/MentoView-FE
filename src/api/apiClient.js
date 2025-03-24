@@ -29,8 +29,12 @@ apiClient.interceptors.response.use(
         if (error.response) {
             const status = error.response.status;
 
-            if ((status === 401 || status === 500) && !originalRequest._retry) {
-                originalRequest._retry = true;
+            if (!originalRequest._retryCount) {
+                originalRequest._retryCount = 0;
+            }
+
+            if ((status === 401 || status === 500) && originalRequest._retryCount < 1) {
+                originalRequest._retryCount += 1;
 
                 try {
                     const response = await apiClient.post("/api/token/access");
@@ -42,13 +46,15 @@ apiClient.interceptors.response.use(
                         return apiClient(originalRequest);
                     }
                 } catch (refreshError) {
-                    alert("토큰 만료로 인한 재 로그인이 필요합니다");
-                    sessionStorage.removeItem("user");
-                    sessionStorage.removeItem("token");
-                    sessionStorage.removeItem("isAuthenticated");
-                    dispatch(setUser(null));
-                    window.location.href = "/login";
+                    console.error("토큰 갱신 실패:", refreshError);
                 }
+            }
+
+            if (status === 401) {
+                alert("토큰 만료로 인해 로그아웃됩니다.");
+                sessionStorage.clear();
+                dispatch(setUser(null));
+                window.location.href = "/login";
             }
         }
 

@@ -136,7 +136,7 @@ const Login = () => {
     return (
         <LoginBox>
             <LoginForm>
-                <img className="logo" src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" onClick={() => { navigate("/") }} />
+                <img className="logo" src={`${process.env.PUBLIC_URL}/logo.webp`} alt="logo" onClick={() => { navigate("/") }} />
                 <Input type="text" name="email" placeholder="EMAIL" onChange={handleChange} />
                 <Input type="password" name="password" placeholder="PW" onChange={handleChange} onKeyDown={handleKeyDown} />
                 <div className="error">{error && "아이디 혹은 비밀번호가 일치하지 않습니다."}</div>
