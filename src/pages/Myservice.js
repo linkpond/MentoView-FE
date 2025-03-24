@@ -321,12 +321,12 @@ const MyService = () => {
     const filteredResumeList = resumeList?.filter(item => item.deleteStatus !== true);
     const user = useSelector(state => state.auth.user);
 
-    // useEffect(() => {
-    //     if (!user) {
-    //         alert("로그인이 필요한 서비스입니다.");
-    //         navigate("/login");
-    //     }
-    // }, [user, navigate]);
+    useEffect(() => {
+        if (!user) {
+            alert("로그인이 필요한 서비스입니다.");
+            navigate("/login");
+        }
+    }, [user, navigate]);
 
     const toggleAccordion = (index) => {
         setOpenIndex(openIndex === index ? null : index);
