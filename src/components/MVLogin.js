@@ -154,18 +154,24 @@ const MVLogin = () => {
     };
 
     useEffect(() => {
-        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{8,15}$/;
-
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&^~+=()[\]#-])[A-Za-z\d@$!%*?&^~+=()[\]#-]{8,15}$/;
+        const forbiddenChars = /[^A-Za-z\d@$!%*?&^~+=()[\]#-]/;
+    
+        if (forbiddenChars.test(formData.password)) {
+            setErrorMessage("허용되지 않은 특수문자가 포함되어 있습니다.");
+            return;
+        }
+    
         if (!passwordRegex.test(formData.password)) {
             setErrorMessage("비밀번호는 8~15자이며, 영문자, 숫자, 특수문자를 포함해야 합니다.");
             return;
         }
-
+    
         if (formData.password !== formData.passwordCheck) {
             setErrorMessage("비밀번호가 일치하지 않습니다.");
             return;
         }
-
+    
         setErrorMessage("");
     }, [formData]);
 

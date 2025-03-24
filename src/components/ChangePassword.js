@@ -87,16 +87,27 @@ const ChangePassword = () => {
         afterPassword: "",
         afterPasswordCheck: "",
     });
-    
+
     const handleChange = (e) => {
         setPasswords((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
     useEffect(() => {
-        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{8,15}$/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&^~+=()[\]#-])[A-Za-z\d@$!%*?&^~+=()[\]#-]{8,15}$/;
+        const forbiddenChars = /[^A-Za-z\d@$!%*?&^~+=()[\]#-]/;
+
+        if (forbiddenChars.test(passwords.beforePassword)) {
+            setErrorMessage("현재 비밀번호에 허용되지 않은 특수문자가 포함되어 있습니다.");
+            return;
+        }
 
         if (!passwordRegex.test(passwords.beforePassword)) {
             setErrorMessage("현재 비밀번호는 8~15자이며, 영문자, 숫자, 특수문자를 포함해야 합니다.");
+            return;
+        }
+
+        if (forbiddenChars.test(passwords.afterPassword)) {
+            setErrorMessage("새 비밀번호에 허용되지 않은 특수문자가 포함되어 있습니다.");
             return;
         }
 
