@@ -144,7 +144,7 @@ const Payment = () => {
                             <PaymentItem key={item.subId}>
                                 <div className="sub-box">
                                     <span className="edge">결제수단</span>
-                                    <img className="kakao" src={process.env.PUBLIC_URL + "kakao.png"} alt="kakaopay" />
+                                    <img className="kakao" src={process.env.PUBLIC_URL + "kakao.webp"} alt="kakaopay" />
                                     <span className="edge">등록일자</span>
                                     <span className="sub-text">{item.startDate}</span>
                                     <span className="edge hide">이용권</span>

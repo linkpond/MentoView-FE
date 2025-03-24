@@ -348,7 +348,7 @@ const MyPage = () => {
                                 </TabItem>
                             ))}
                             <RiLogoutBoxLine className="logout" onClick={handleLogout} />
-                            <img className="logo" src={`${process.env.PUBLIC_URL}/logo.png`} alt="logo" />
+                            <img className="logo" src={`${process.env.PUBLIC_URL}/logo.webp`} alt="logo" />
                         </MyPageTab>
                         <TabContentBox>
                             {tabContents[activeTab] && tabContents[activeTab]()}

@@ -35,7 +35,7 @@ const ImageBox = styled.div`
     width: 100%;
     height: 95vh;
     border: 1px solid black;
-    background-image: url(${process.env.PUBLIC_URL}/iv.jpg);
+    background-image: url(${process.env.PUBLIC_URL}/iv.webp);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -281,7 +281,7 @@ const About = () => {
                 <MidTitle>AI가 당신의 이력서를 분석하고</MidTitle>
                 <MidTitle>예상 질문과 피드백을 제공합니다</MidTitle>
                 <ResumeBox>
-                    <img className="resume" src={`${process.env.PUBLIC_URL}/resume.jpg`} alt="resume" />
+                    <img className="resume" src={`${process.env.PUBLIC_URL}/resume.webp`} alt="resume" />
                     <div className="rt-box">
                         <Edge>간편한 이력서 등록</Edge>
                         <span className="title">&middot; 기존의 이력서 파일을 등록해주세요</span>
@@ -294,7 +294,7 @@ const About = () => {
                         <span className="title">주어진 질문에 음성으로 답하면 &middot;</span>
                         <span className="title">전문적인 피드백을 전달해요 &middot;</span>
                     </div>
-                    <img className="interview" src={`${process.env.PUBLIC_URL}/interview.jpg`} alt="interview" />
+                    <img className="interview" src={`${process.env.PUBLIC_URL}/interview.webp`} alt="interview" />
                 </InterviewBox>
             </MidBox>
             <BottomBox>

@@ -17,7 +17,6 @@ export const useSubmitLoginRequest = () => {
             }
         },
         onError: (err) => {
-            console.log("로그인 실패:", err.response?.data || err.message);
         },
     });
 };

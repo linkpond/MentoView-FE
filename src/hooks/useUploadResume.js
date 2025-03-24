@@ -18,10 +18,8 @@ const useUploadResume = () => {
     return useMutation({
         mutationFn: uploadResume,
         onSuccess: (data) => {
-            console.log("파일 업로드 성공:", data);
         },
         onError: (error) => {
-            console.error("파일 업로드 실패:", error);
         },
     });
 };

@@ -15,7 +15,7 @@ const LayoutContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   ${({ hasBackground }) => hasBackground && `
-    background-image: url(${process.env.PUBLIC_URL}/bg2.jpg);
+    background-image: url(${process.env.PUBLIC_URL}/bg2.webp);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;

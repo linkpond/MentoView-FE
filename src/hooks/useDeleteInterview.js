@@ -9,10 +9,8 @@ const useDeleteInterview = () => {
     return useMutation({
         mutationFn: deleteInterview,
         onSuccess: () => {
-            console.log("삭제 성공");
         },
         onError: (error) => {
-            console.error("삭제 실패:", error);
         },
     });
 };
