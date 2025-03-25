@@ -27,12 +27,15 @@
 ```md
 MentoView-FE
 ├── src
+│ ├── api/ # axios apiClient
 │ ├── components/ # 재사용 가능한 UI 컴포넌트 모음(ex: Nav, Footer 등)
 │ ├── hooks/ # 커스텀 훅 API 저장
 │ ├── pages/ # 개별 페이지 컴포넌트 (ex: Main, About 등)
+│ ├── redux/ # redux store, slice 모음음
 │ ├── styles/ # 전역 및 컴포넌트 스타일링 파일
 │ ├── App.js # 메인 애플리케이션 컴포넌트
 │ ├── index.js # React 애플리케이션의 진입점
 ├── public/ # 정적 파일 (ex: index.html, favicon 등)
 ├── package.json # 프로젝트 설정 및 의존성 목록
+├── .env # 프로젝트 환경변수 저장장
 └── README.md # 프로젝트 설명 문서
